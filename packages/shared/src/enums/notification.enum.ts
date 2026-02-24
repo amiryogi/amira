@@ -1,0 +1,19 @@
+export enum NotificationType {
+  ORDER_CONFIRMATION = 'ORDER_CONFIRMATION',
+  STATUS_UPDATE = 'STATUS_UPDATE',
+  PAYMENT_SUCCESS = 'PAYMENT_SUCCESS',
+  PAYMENT_FAILURE = 'PAYMENT_FAILURE',
+  WELCOME = 'WELCOME',
+  PASSWORD_RESET = 'PASSWORD_RESET',
+}
+
+export enum NotificationChannel {
+  EMAIL = 'EMAIL',
+  PUSH = 'PUSH',
+}
+
+export enum NotificationStatus {
+  PENDING = 'PENDING',
+  SENT = 'SENT',
+  FAILED = 'FAILED',
+}

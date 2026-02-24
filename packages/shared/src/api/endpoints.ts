@@ -1,0 +1,64 @@
+export const API_ENDPOINTS = {
+  AUTH: {
+    LOGIN: '/api/v1/auth/login',
+    REGISTER: '/api/v1/auth/register',
+    REFRESH: '/api/v1/auth/refresh',
+    LOGOUT: '/api/v1/auth/logout',
+    FORGOT_PASSWORD: '/api/v1/auth/forgot-password',
+    RESET_PASSWORD: '/api/v1/auth/reset-password',
+  },
+  PRODUCTS: {
+    LIST: '/api/v1/products',
+    BY_SLUG: '/api/v1/products/:slug',
+    CREATE: '/api/v1/products',
+    UPDATE: '/api/v1/products/:id',
+    DELETE: '/api/v1/products/:id',
+  },
+  CATEGORIES: {
+    LIST: '/api/v1/categories',
+    BY_SLUG: '/api/v1/categories/:slug',
+    CREATE: '/api/v1/categories',
+    UPDATE: '/api/v1/categories/:id',
+    DELETE: '/api/v1/categories/:id',
+  },
+  ORDERS: {
+    LIST: '/api/v1/orders',
+    BY_ID: '/api/v1/orders/:id',
+    CREATE: '/api/v1/orders',
+    UPDATE_STATUS: '/api/v1/orders/:id/status',
+  },
+  PAYMENTS: {
+    CREATE_ESEWA: '/api/v1/payments/esewa/create',
+    VERIFY_ESEWA: '/api/v1/payments/esewa/verify',
+    LIST: '/api/v1/payments',
+    BY_ID: '/api/v1/payments/:id',
+  },
+  REVIEWS: {
+    LIST: '/api/v1/reviews',
+    BY_PRODUCT: '/api/v1/reviews/product/:productId',
+    CREATE: '/api/v1/reviews',
+    DELETE: '/api/v1/reviews/:id',
+  },
+  USERS: {
+    PROFILE: '/api/v1/users/profile',
+    LIST: '/api/v1/users',
+    BY_ID: '/api/v1/users/:id',
+    UPDATE_ROLE: '/api/v1/users/:id/role',
+  },
+  ADDRESSES: {
+    LIST: '/api/v1/users/addresses',
+    CREATE: '/api/v1/users/addresses',
+    UPDATE: '/api/v1/users/addresses/:id',
+    DELETE: '/api/v1/users/addresses/:id',
+    SET_DEFAULT: '/api/v1/users/addresses/:id/default',
+  },
+  SEARCH: {
+    SEARCH: '/api/v1/search',
+    SUGGEST: '/api/v1/search/suggest',
+  },
+  ANALYTICS: {
+    DASHBOARD: '/api/v1/analytics/dashboard',
+    REVENUE: '/api/v1/analytics/revenue',
+    TOP_PRODUCTS: '/api/v1/analytics/top-products',
+  },
+} as const;

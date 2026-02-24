@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  /* ─── Amira Nepal Brand Colors ─── */
+  --color-brand-50: #fdf8f1;
+  --color-brand-100: #f8ecda;
+  --color-brand-200: #f0d5b0;
+  --color-brand-300: #e6b97d;
+  --color-brand-400: #db9a4f;
+  --color-brand-500: #c87d2e;
+  --color-brand-600: #b46623;
+  --color-brand-700: #8b4513;
+  --color-brand-800: #6f3810;
+  --color-brand-900: #5a2e0e;
+
+  /* ─── Warm Neutrals ─── */
+  --color-warm-50: #faf8f5;
+  --color-warm-100: #f3efe8;
+  --color-warm-200: #e8e0d4;
+  --color-warm-300: #d6c9b6;
+  --color-warm-400: #bfac93;
+  --color-warm-500: #a69074;
+  --color-warm-600: #8a7561;
+  --color-warm-700: #6e5d4f;
+  --color-warm-800: #574a3f;
+  --color-warm-900: #463c33;
+
+  /* ─── Font Families ─── */
+  --font-sans: "Inter", "system-ui", sans-serif;
+  --font-display: "Playfair Display", "Georgia", serif;
+}

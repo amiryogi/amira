@@ -1,0 +1,44 @@
+{
+  "name": "amira",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev:api": "turbo run dev --filter=@amira/api",
+    "dev:web": "turbo run dev --filter=@amira/web",
+    "dev:admin": "turbo run dev --filter=@amira/admin",
+    "build": "turbo run build",
+    "build:shared": "turbo run build --filter=@amira/shared",
+    "build:api": "turbo run build --filter=@amira/api",
+    "build:web": "turbo run build --filter=@amira/web",
+    "build:admin": "turbo run build --filter=@amira/admin",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:coverage": "turbo run test:coverage",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "seed": "pnpm --filter @amira/api seed"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0",
+    "prettier": "^3.4.0",
+    "eslint": "^9.17.0",
+    "typescript": "^5.7.0",
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "husky": "^9.1.0",
+    "lint-staged": "^15.3.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

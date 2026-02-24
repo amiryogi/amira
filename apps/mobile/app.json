@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Amira Woolens",
+    "slug": "amira-woolens",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#6B4226"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.amira.woolens"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#6B4226"
+      },
+      "package": "com.amira.woolens"
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
+  }
+}
