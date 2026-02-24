@@ -67,8 +67,11 @@ export const dataProvider: DataProvider = {
   getApiUrl: () => '/api/v1',
 
   custom: async ({ url, method, payload, query }) => {
+    // Strip the baseURL prefix if the caller already included it,
+    // since the axios instance already sets baseURL to '/api/v1'
+    const cleanUrl = url.replace(/^\/api\/v1/, '');
     const config: AxiosRequestConfig = {
-      url,
+      url: cleanUrl,
       method: method as string,
       data: payload,
       params: query,

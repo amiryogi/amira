@@ -54,7 +54,7 @@ export function ProductFormPage() {
           description: product.description as string,
           price: product.price as number,
           stock: product.stock as number,
-          category: (product.category as { _id: string })?._id || (product.category as string),
+          categoryId: (product.category as { _id: string })?._id || (product.categoryId as string) || (product.category as string),
         }
       : undefined,
   });
@@ -81,7 +81,7 @@ export function ProductFormPage() {
     formData.append('description', data.description);
     formData.append('price', String(data.price));
     formData.append('stock', String(data.stock));
-    formData.append('category', data.category);
+    formData.append('categoryId', data.categoryId);
     imageFiles.forEach((file) => formData.append('images', file));
 
     if (isEdit) {
@@ -154,8 +154,8 @@ export function ProductFormPage() {
               label="Category"
               options={categories.map((c) => ({ value: (c as unknown as Category)._id, label: (c as unknown as Category).name }))}
               placeholder="Select a category"
-              error={errors.category?.message}
-              {...register('category')}
+              error={errors.categoryId?.message}
+              {...register('categoryId')}
             />
 
             {/* Image upload */}

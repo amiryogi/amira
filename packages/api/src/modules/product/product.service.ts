@@ -145,6 +145,13 @@ export class ProductService {
   private async uploadImages(files?: Express.Multer.File[]): Promise<string[]> {
     if (!files || files.length === 0) return [];
 
+    // Skip upload if Cloudinary is not configured (dev mode without credentials)
+    const { config } = await import('../../config/index.js');
+    if (!config.cloudinary.cloudName || !config.cloudinary.apiKey) {
+      console.warn('⚠️  Cloudinary not configured — skipping image upload');
+      return files.map((f) => `/placeholder-${f.originalname}`);
+    }
+
     const uploadPromises = files.map(
       (file) =>
         new Promise<string>((resolve, reject) => {

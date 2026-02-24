@@ -13,30 +13,25 @@ interface DashboardSummary {
   totalOrders: number;
   totalProducts: number;
   totalUsers: number;
+  pendingOrders: number;
 }
 
-interface MonthlyRevenue {
-  _id: { year: number; month: number };
-  revenue: number;
-  count: number;
+interface RevenueData {
+  monthly: Array<{ month: string; revenue: number; orders: number }>;
+  byPaymentMethod: Array<{ method: string; total: number; count: number }>;
+  failedPaymentRate: { total: number; failed: number; rate: number };
 }
 
 interface OrderStatusCount {
-  _id: string;
+  status: string;
   count: number;
 }
 
 interface TopProduct {
-  _id: string;
+  productId: string;
+  name: string;
   totalSold: number;
   revenue: number;
-  name: string;
-}
-
-interface PaymentMethodData {
-  _id: string;
-  count: number;
-  total: number;
 }
 
 export function DashboardPage() {
@@ -45,38 +40,32 @@ export function DashboardPage() {
     method: 'get',
   });
 
-  const { data: revenueData } = useCustom<MonthlyRevenue[]>({
-    url: '/api/v1/analytics/revenue/monthly',
+  const { data: revenueData } = useCustom<RevenueData>({
+    url: '/api/v1/analytics/revenue',
     method: 'get',
   });
 
   const { data: statusData } = useCustom<OrderStatusCount[]>({
-    url: '/api/v1/analytics/orders/status',
+    url: '/api/v1/analytics/order-status',
     method: 'get',
   });
 
   const { data: topProductsData } = useCustom<TopProduct[]>({
-    url: '/api/v1/analytics/products/top',
-    method: 'get',
-  });
-
-  const { data: paymentMethodData } = useCustom<PaymentMethodData[]>({
-    url: '/api/v1/analytics/revenue/payment-method',
+    url: '/api/v1/analytics/top-products',
     method: 'get',
   });
 
   const summary = summaryData?.data as unknown as DashboardSummary | undefined;
-  const monthlyRevenue = (revenueData?.data as unknown as MonthlyRevenue[]) || [];
+  const revenue = revenueData?.data as unknown as RevenueData | undefined;
+  const monthlyRevenue = revenue?.monthly || [];
+  const paymentMethods = revenue?.byPaymentMethod || [];
   const orderStatus = (statusData?.data as unknown as OrderStatusCount[]) || [];
   const topProducts = (topProductsData?.data as unknown as TopProduct[]) || [];
-  const paymentMethods = (paymentMethodData?.data as unknown as PaymentMethodData[]) || [];
-
-  const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   const revenueChart = monthlyRevenue.map((m) => ({
-    month: monthLabels[(m._id.month || 1) - 1],
+    month: m.month,
     revenue: m.revenue,
-    orders: m.count,
+    orders: m.orders,
   }));
 
   const statCards = [
@@ -138,7 +127,7 @@ export function DashboardPage() {
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={orderStatus.map((s) => ({ name: s._id, value: s.count }))}
+                  data={orderStatus.map((s) => ({ name: s.status, value: s.count }))}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
@@ -193,7 +182,7 @@ export function DashboardPage() {
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={paymentMethods.map((p) => ({ name: p._id, value: p.count }))}
+                  data={paymentMethods.map((p) => ({ name: p.method, value: p.count }))}
                   cx="50%"
                   cy="50%"
                   outerRadius={100}
