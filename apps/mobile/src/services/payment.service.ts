@@ -12,7 +12,7 @@ export const paymentService = {
     return data.data;
   },
 
-  list: async (params?: { page?: number; limit?: number; status?: string }) => {
+  list: async (params?: { page?: number; limit?: number; status?: string; search?: string }) => {
     const { data } = await api.get(API_ENDPOINTS.PAYMENTS.LIST, { params });
     return data.data;
   },

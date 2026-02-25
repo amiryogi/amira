@@ -31,7 +31,7 @@ export function ProductsScreen() {
   const { data, isLoading, refetch, isRefetching } = useProducts({
     page,
     limit: 10,
-    category: route.params?.category,
+    categoryId: route.params?.categoryId,
     search: search || undefined,
     sort: sortBy,
   });

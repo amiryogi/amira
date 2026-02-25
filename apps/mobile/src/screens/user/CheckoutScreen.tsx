@@ -48,9 +48,24 @@ export function CheckoutScreen() {
 
     setSubmitting(true);
     try {
+      const selectedAddr = addresses.find((a: { _id: string }) => a._id === selectedAddress);
+      if (!selectedAddr) {
+        Alert.alert('Error', 'Selected address not found.');
+        setSubmitting(false);
+        return;
+      }
       const orderPayload = {
-        items: items.map((i) => ({ product: i.productId, quantity: i.quantity })),
-        shippingAddress: selectedAddress,
+        products: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+        deliveryAddress: {
+          label: selectedAddr.label || 'Home',
+          fullName: selectedAddr.fullName,
+          phone: selectedAddr.phone,
+          street: selectedAddr.street,
+          city: selectedAddr.city,
+          district: selectedAddr.district || '',
+          province: selectedAddr.province,
+          postalCode: selectedAddr.postalCode || '',
+        },
         paymentMethod,
       };
       const order = await createOrder.mutateAsync(orderPayload);
@@ -98,7 +113,7 @@ export function CheckoutScreen() {
               <Text className="text-sm text-gray-500 mt-1">Add an address</Text>
             </TouchableOpacity>
           ) : (
-            addresses.map((addr: { _id: string; fullName: string; street: string; city: string; state: string; phone: string }) => (
+            addresses.map((addr: { _id: string; label?: string; fullName: string; street: string; city: string; district?: string; province: string; phone: string }) => (
               <TouchableOpacity
                 key={addr._id}
                 className={`border rounded-2xl p-4 mb-2 ${
@@ -108,7 +123,7 @@ export function CheckoutScreen() {
               >
                 <Text className="font-medium text-gray-800">{addr.fullName}</Text>
                 <Text className="text-sm text-gray-500 mt-0.5">
-                  {addr.street}, {addr.city}, {addr.state}
+                  {addr.street}, {addr.city}, {addr.province}
                 </Text>
                 <Text className="text-sm text-gray-400 mt-0.5">{addr.phone}</Text>
               </TouchableOpacity>

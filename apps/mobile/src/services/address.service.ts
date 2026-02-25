@@ -2,11 +2,13 @@ import api from './api';
 import { API_ENDPOINTS } from '@amira/shared';
 
 interface AddressPayload {
+  label: string;
   fullName: string;
   phone: string;
   street: string;
   city: string;
-  state: string;
+  district: string;
+  province: string;
   postalCode?: string;
   isDefault?: boolean;
 }

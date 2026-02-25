@@ -36,12 +36,12 @@ export function AdminOrderDetailScreen() {
   const updateStatus = useUpdateOrderStatus();
   const order = data?.order || data;
 
-  const handleStatusUpdate = (status: string) => {
-    Alert.alert('Update Status', `Change order status to ${status}?`, [
+  const handleStatusUpdate = (orderStatus: string) => {
+    Alert.alert('Update Status', `Change order status to ${orderStatus}?`, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Update',
-        onPress: () => updateStatus.mutate({ id: route.params.id, status }),
+        onPress: () => updateStatus.mutate({ id: route.params.id, orderStatus }),
       },
     ]);
   };
@@ -85,7 +85,7 @@ export function AdminOrderDetailScreen() {
       {/* Items */}
       <View className="bg-white rounded-2xl p-4 mb-4">
         <Text className="font-semibold text-gray-800 mb-3">Items</Text>
-        {order.items?.map((item: { name: string; price: number; quantity: number; image?: string }, i: number) => (
+        {order.products?.map((item: { name: string; price: number; quantity: number; image?: string }, i: number) => (
           <View key={i} className="flex-row items-center mb-3">
             {item.image && (
               <Image source={{ uri: item.image }} className="w-12 h-12 rounded-xl mr-3" resizeMode="cover" />
@@ -125,13 +125,13 @@ export function AdminOrderDetailScreen() {
       </View>
 
       {/* Shipping */}
-      {order.shippingAddress && (
+      {order.deliveryAddress && (
         <View className="bg-white rounded-2xl p-4">
           <Text className="font-semibold text-gray-800 mb-2">Shipping Address</Text>
-          <Text className="text-sm text-gray-600">{order.shippingAddress.fullName}</Text>
-          <Text className="text-sm text-gray-500">{order.shippingAddress.street}, {order.shippingAddress.city}</Text>
-          <Text className="text-sm text-gray-500">{order.shippingAddress.state}</Text>
-          <Text className="text-sm text-gray-400 mt-1">{order.shippingAddress.phone}</Text>
+          <Text className="text-sm text-gray-600">{order.deliveryAddress.fullName}</Text>
+          <Text className="text-sm text-gray-500">{order.deliveryAddress.street}, {order.deliveryAddress.city}</Text>
+          <Text className="text-sm text-gray-500">{order.deliveryAddress.district && `${order.deliveryAddress.district}, `}{order.deliveryAddress.province}</Text>
+          <Text className="text-sm text-gray-400 mt-1">{order.deliveryAddress.phone}</Text>
         </View>
       )}
     </ScrollView>

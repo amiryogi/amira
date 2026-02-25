@@ -82,7 +82,7 @@ export function HomeScreen() {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   className="mr-3 bg-white rounded-2xl p-4 items-center w-24 shadow-sm"
-                  onPress={() => navigation.navigate('Products', { category: item.slug })}
+                  onPress={() => navigation.navigate('Products', { categoryId: item._id })}
                 >
                   <Ionicons name="grid-outline" size={24} color="#6B4226" />
                   <Text className="text-xs text-gray-700 mt-2 text-center" numberOfLines={1}>

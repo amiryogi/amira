@@ -25,7 +25,7 @@ export default function ProfilePage() {
     },
   });
 
-  const user = profileData?.data;
+  const user = profileData;
 
   const {
     register,

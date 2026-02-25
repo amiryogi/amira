@@ -15,7 +15,7 @@ interface User {
   email: string;
   phone?: string;
   role: string;
-  isActive: boolean;
+  isVerified: boolean;
   createdAt: string;
 }
 
@@ -125,8 +125,8 @@ export function UserListPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={user.isActive !== false ? 'success' : 'destructive'}>
-                        {user.isActive !== false ? 'Active' : 'Inactive'}
+                      <Badge variant={user.isVerified !== false ? 'success' : 'destructive'}>
+                        {user.isVerified !== false ? 'Verified' : 'Unverified'}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-gray-500">

@@ -8,7 +8,7 @@ export const reviewService = {
     return data.data;
   },
 
-  create: async (payload: { product: string; rating: number; comment?: string }) => {
+  create: async (payload: { productId: string; rating: number; comment?: string }) => {
     const { data } = await api.post(API_ENDPOINTS.REVIEWS.CREATE, payload);
     return data.data;
   },

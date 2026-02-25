@@ -25,7 +25,7 @@ interface OrderCardProps {
     orderStatus: OrderStatus;
     paymentStatus: PaymentStatus;
     createdAt: string;
-    items: Array<{ name: string }>;
+    products: Array<{ name: string }>;
   };
   onPress: () => void;
 }
@@ -47,7 +47,7 @@ export function OrderCard({ order, onPress }: OrderCardProps) {
       </View>
 
       <Text className="text-xs text-gray-500 mb-2" numberOfLines={1}>
-        {order.items.map((i) => i.name).join(', ')}
+        {order.products.map((i) => i.name).join(', ')}
       </Text>
 
       <View className="flex-row items-center justify-between">

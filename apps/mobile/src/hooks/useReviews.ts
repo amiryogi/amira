@@ -14,7 +14,7 @@ export function useCreateReview() {
   return useMutation({
     mutationFn: reviewService.create,
     onSuccess: (_data, variables) => {
-      qc.invalidateQueries({ queryKey: ['reviews', variables.product] });
+      qc.invalidateQueries({ queryKey: ['reviews', variables.productId] });
       qc.invalidateQueries({ queryKey: ['product'] });
     },
   });

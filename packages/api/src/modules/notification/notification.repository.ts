@@ -38,7 +38,11 @@ export class NotificationRepository {
     skip: number,
     limit: number,
   ): Promise<INotificationDocument[]> {
-    return Notification.find(filter).sort(sort).skip(skip).limit(limit);
+    return Notification.find(filter)
+      .populate('userId', 'name email')
+      .sort(sort)
+      .skip(skip)
+      .limit(limit);
   }
 
   async count(filter: Record<string, unknown> = {}): Promise<number> {

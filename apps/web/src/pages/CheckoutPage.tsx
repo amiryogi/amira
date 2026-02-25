@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/cart.store';
 import { useAddresses } from '../hooks/useAddresses';
 import { useCreateOrder } from '../hooks/useOrders';
 import { PaymentMethod } from '@amira/shared';
+import type { IAddress } from '@amira/shared';
+import { paymentService } from '../services/payment.service';
 import { Button } from '../components/ui/Button';
 import { Skeleton } from '../components/ui/Skeleton';
+import toast from 'react-hot-toast';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -16,13 +19,16 @@ export default function CheckoutPage() {
   const [selectedAddress, setSelectedAddress] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.COD);
 
-  const addresses = addressesData?.data || [];
+  // useAddresses returns unwrapped IAddress[]
+  const addresses = (addressesData || []) as IAddress[];
 
-  // Auto-select default address
-  if (!selectedAddress && addresses.length > 0) {
-    const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
-    if (defaultAddr) setSelectedAddress(defaultAddr._id);
-  }
+  // Auto-select default address via useEffect (not during render)
+  useEffect(() => {
+    if (!selectedAddress && addresses.length > 0) {
+      const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
+      if (defaultAddr) setSelectedAddress(defaultAddr._id);
+    }
+  }, [addresses, selectedAddress]);
 
   if (items.length === 0) {
     navigate('/cart');
@@ -32,22 +38,69 @@ export default function CheckoutPage() {
   const handlePlaceOrder = () => {
     if (!selectedAddress) return;
 
+    const selectedAddr = addresses.find((a) => a._id === selectedAddress);
+    if (!selectedAddr) return;
+
     createOrderMutation.mutate(
       {
-        shippingAddress: selectedAddress,
-        paymentMethod,
-        items: items.map((item) => ({
-          product: item.productId,
+        products: items.map((item) => ({
+          productId: item.productId,
           quantity: item.quantity,
         })),
+        deliveryAddress: {
+          label: selectedAddr.label,
+          fullName: selectedAddr.fullName,
+          phone: selectedAddr.phone,
+          street: selectedAddr.street,
+          city: selectedAddr.city,
+          district: selectedAddr.district,
+          province: selectedAddr.province,
+          postalCode: selectedAddr.postalCode,
+        },
+        paymentMethod,
       },
       {
-        onSuccess: (data) => {
-          clearCart();
-          if (paymentMethod === PaymentMethod.ESEWA && data?.data?.esewaPaymentUrl) {
-            window.location.href = data.data.esewaPaymentUrl;
+        onSuccess: (response) => {
+          const orderId = response?.data?.data?._id;
+          if (paymentMethod === PaymentMethod.ESEWA && orderId) {
+            // Initiate eSewa payment via payment service
+            paymentService.createEsewa(orderId).then(({ data: esewaResp }) => {
+              const esewaData = esewaResp.data;
+              if (esewaData) {
+                // Build an eSewa form and submit it
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'https://rc-epay.esewa.com.np/api/epay/main/v2/form';
+                const fields = {
+                  amount: String(esewaData.amount),
+                  tax_amount: String(esewaData.taxAmount),
+                  total_amount: String(esewaData.totalAmount),
+                  transaction_uuid: esewaData.transactionUuid,
+                  product_code: esewaData.productCode,
+                  product_service_charge: String(esewaData.productServiceCharge),
+                  product_delivery_charge: String(esewaData.productDeliveryCharge),
+                  success_url: esewaData.successUrl,
+                  failure_url: esewaData.failureUrl,
+                  signed_field_names: esewaData.signedFieldNames,
+                  signature: esewaData.signature,
+                };
+                Object.entries(fields).forEach(([key, value]) => {
+                  const input = document.createElement('input');
+                  input.type = 'hidden';
+                  input.name = key;
+                  input.value = value;
+                  form.appendChild(input);
+                });
+                document.body.appendChild(form);
+                form.submit();
+              }
+            }).catch(() => {
+              toast.error('Failed to initiate eSewa payment');
+            });
+            clearCart();
           } else {
-            navigate('/order-success', { state: { orderId: data?.data?._id } });
+            clearCart();
+            navigate('/order-success', { state: { orderId } });
           }
         },
         onError: () => {
@@ -105,8 +158,9 @@ export default function CheckoutPage() {
                     />
                     <div className="ml-3">
                       <p className="font-medium text-warm-800">{addr.label}</p>
+                      <p className="text-sm text-warm-500">{addr.fullName}</p>
                       <p className="text-sm text-warm-500">
-                        {addr.street}, {addr.city}, {addr.state} {addr.postalCode}
+                        {addr.street}, {addr.city}, {addr.district}, {addr.province} {addr.postalCode}
                       </p>
                       <p className="text-sm text-warm-500">{addr.phone}</p>
                     </div>

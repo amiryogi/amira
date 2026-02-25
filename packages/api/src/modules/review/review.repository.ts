@@ -17,7 +17,7 @@ export class ReviewRepository {
     limit: number,
   ): Promise<IReviewDocument[]> {
     return Review.find({ productId: new mongoose.Types.ObjectId(productId), isApproved: true })
-      .populate('userId', 'name')
+      .populate('userId', 'name email')
       .sort(sort)
       .skip(skip)
       .limit(limit);
@@ -34,7 +34,7 @@ export class ReviewRepository {
     limit: number,
   ): Promise<IReviewDocument[]> {
     return Review.find(filter)
-      .populate('userId', 'name')
+      .populate('userId', 'name email')
       .populate('productId', 'name slug')
       .sort(sort)
       .skip(skip)

@@ -29,3 +29,34 @@
   --font-sans: "Inter", "system-ui", sans-serif;
   --font-display: "Playfair Display", "Georgia", serif;
 }
+
+/* ─── Base styles ─── */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--color-warm-50);
+  color: var(--color-warm-800);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-warm-300); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-warm-400); }
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Custom utilities */
+@layer utilities {
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+}

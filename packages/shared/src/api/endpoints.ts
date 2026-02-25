@@ -9,7 +9,8 @@ export const API_ENDPOINTS = {
   },
   PRODUCTS: {
     LIST: '/api/v1/products',
-    BY_SLUG: '/api/v1/products/:slug',
+    BY_ID: '/api/v1/products/:id',
+    BY_SLUG: '/api/v1/products/slug/:slug',
     CREATE: '/api/v1/products',
     UPDATE: '/api/v1/products/:id',
     DELETE: '/api/v1/products/:id',

@@ -107,15 +107,26 @@ export class ReviewService {
     await this.productRepo.updateRating(productId, averageRating, totalReviews);
   }
 
-  private toReview(doc: IReviewDocument): IReview {
+  private toReview(doc: IReviewDocument): IReview & { user?: { name: string; email: string }; product?: { name: string } } {
+    // Handle populated user
+    const populatedUser = typeof doc.userId === 'object' && doc.userId !== null && 'email' in doc.userId
+      ? doc.userId as unknown as { _id: { toString(): string }; name: string; email: string }
+      : null;
+    // Handle populated product
+    const populatedProduct = typeof doc.productId === 'object' && doc.productId !== null && 'name' in doc.productId
+      ? doc.productId as unknown as { _id: { toString(): string }; name: string; slug: string }
+      : null;
+
     return {
       _id: doc._id as string,
-      productId: doc.productId.toString(),
-      userId: doc.userId.toString(),
+      productId: populatedProduct ? populatedProduct._id.toString() : doc.productId.toString(),
+      userId: populatedUser ? populatedUser._id.toString() : doc.userId.toString(),
       rating: doc.rating,
       comment: doc.comment,
       isApproved: doc.isApproved,
       createdAt: doc.createdAt.toISOString(),
+      ...(populatedUser && { user: { name: populatedUser.name, email: populatedUser.email } }),
+      ...(populatedProduct && { product: { name: populatedProduct.name } }),
     };
   }
 }

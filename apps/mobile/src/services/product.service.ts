@@ -4,7 +4,7 @@ import { API_ENDPOINTS } from '@amira/shared';
 interface ProductQuery {
   page?: number;
   limit?: number;
-  category?: string;
+  categoryId?: string;
   search?: string;
   sort?: string;
   minPrice?: number;
@@ -23,6 +23,12 @@ export const productService = {
     return data.data;
   },
 
+  getById: async (id: string) => {
+    const url = API_ENDPOINTS.PRODUCTS.BY_ID.replace(':id', id);
+    const { data } = await api.get(url);
+    return data.data;
+  },
+
   create: async (formData: FormData) => {
     const { data } = await api.post(API_ENDPOINTS.PRODUCTS.CREATE, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
@@ -32,7 +38,7 @@ export const productService = {
 
   update: async (id: string, formData: FormData) => {
     const url = API_ENDPOINTS.PRODUCTS.UPDATE.replace(':id', id);
-    const { data } = await api.patch(url, formData, {
+    const { data } = await api.put(url, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return data.data;

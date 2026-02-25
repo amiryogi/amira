@@ -59,9 +59,9 @@ export default function OrdersPage() {
                 const o = order as {
                   _id: string;
                   totalAmount: number;
-                  status: string;
+                  orderStatus: string;
                   paymentMethod: string;
-                  items: { product: { name: string; images: string[] }; quantity: number; price: number }[];
+                  products: { productId: string; name: string; image?: string; quantity: number; price: number }[];
                   createdAt: string;
                 };
                 return (
@@ -84,33 +84,33 @@ export default function OrdersPage() {
                         </p>
                       </div>
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[o.status] || 'bg-warm-100 text-warm-700'}`}
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${statusColors[o.orderStatus] || 'bg-warm-100 text-warm-700'}`}
                       >
-                        {o.status}
+                        {o.orderStatus}
                       </span>
                     </div>
                     <div className="mt-3 flex items-center gap-3">
-                      {o.items.slice(0, 3).map((item, i) => (
+                      {o.products.slice(0, 3).map((item, i) => (
                         <div
                           key={i}
                           className="h-12 w-12 overflow-hidden rounded-lg bg-warm-100"
                         >
                           <img
-                            src={item.product?.images?.[0] || '/placeholder.jpg'}
+                            src={item.image || '/placeholder.jpg'}
                             alt=""
                             className="h-full w-full object-cover"
                           />
                         </div>
                       ))}
-                      {o.items.length > 3 && (
+                      {o.products.length > 3 && (
                         <span className="text-sm text-warm-400">
-                          +{o.items.length - 3} more
+                          +{o.products.length - 3} more
                         </span>
                       )}
                     </div>
                     <div className="mt-3 flex items-center justify-between">
                       <span className="text-sm text-warm-500">
-                        {o.items.length} item{o.items.length > 1 ? 's' : ''} · {o.paymentMethod}
+                        {o.products.length} item{o.products.length > 1 ? 's' : ''} · {o.paymentMethod}
                       </span>
                       <span className="font-semibold text-warm-800">
                         Rs. {o.totalAmount.toLocaleString()}

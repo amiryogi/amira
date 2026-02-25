@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { resetPasswordSchema, type ResetPasswordInput } from '@amira/shared/schemas';
+import { resetPasswordFormSchema, type ResetPasswordFormInput } from '@amira/shared/schemas';
 import { useResetPassword } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -17,14 +17,14 @@ export default function ResetPasswordPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ResetPasswordInput>({
-    resolver: zodResolver(resetPasswordSchema),
+  } = useForm<ResetPasswordFormInput>({
+    resolver: zodResolver(resetPasswordFormSchema),
   });
 
-  const onSubmit = (data: ResetPasswordInput) => {
+  const onSubmit = (data: ResetPasswordFormInput) => {
     if (!token) return;
     resetMutation.mutate(
-      { token, password: data.password, confirmPassword: data.confirmPassword },
+      { token, password: data.password },
       { onSuccess: () => navigate('/login') }
     );
   };

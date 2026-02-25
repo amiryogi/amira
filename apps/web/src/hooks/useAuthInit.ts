@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import axios from 'axios';
 
@@ -12,8 +12,11 @@ export function useAuthInit() {
   const hasHydrated = useAuthStore((s) => s._hasHydrated);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const accessToken = useAuthStore((s) => s.accessToken);
-  const setAccessToken = useAuthStore((s) => s.setAccessToken);
-  const logout = useAuthStore((s) => s.logout);
+  // Use refs for callbacks to avoid re-triggering the effect
+  const loginRef = useRef(useAuthStore.getState().login);
+  const logoutRef = useRef(useAuthStore.getState().logout);
+  loginRef.current = useAuthStore.getState().login;
+  logoutRef.current = useAuthStore.getState().logout;
 
   useEffect(() => {
     // Wait for zustand to hydrate from localStorage first
@@ -36,13 +39,26 @@ export function useAuthInit() {
           { withCredentials: true },
         );
         if (!cancelled && data?.data?.accessToken) {
-          setAccessToken(data.data.accessToken);
-          // Note: we also need the user data; fetch profile after getting token
+          const token = data.data.accessToken;
+          // Fetch user profile with the new token
+          try {
+            const profileResp = await axios.get('/api/v1/users/profile', {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!cancelled && profileResp.data?.data) {
+              loginRef.current(token, profileResp.data.data);
+            }
+          } catch {
+            // Token works but profile fetch failed — set token only
+            if (!cancelled) {
+              useAuthStore.getState().setAccessToken(token);
+            }
+          }
         }
       } catch {
         // No valid refresh token — user must log in
         if (!cancelled) {
-          logout();
+          logoutRef.current();
         }
       } finally {
         if (!cancelled) {
@@ -56,7 +72,7 @@ export function useAuthInit() {
     return () => {
       cancelled = true;
     };
-  }, [hasHydrated, isAuthenticated, accessToken, setAccessToken, logout]);
+  }, [hasHydrated, isAuthenticated, accessToken]);
 
   return { isInitializing: !hasHydrated || isInitializing };
 }

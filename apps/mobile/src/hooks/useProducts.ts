@@ -4,7 +4,7 @@ import { productService } from '@/services/product.service';
 interface ProductQuery {
   page?: number;
   limit?: number;
-  category?: string;
+  categoryId?: string;
   search?: string;
   sort?: string;
 }
@@ -21,6 +21,22 @@ export function useProduct(slug: string) {
     queryKey: ['product', slug],
     queryFn: () => productService.getBySlug(slug),
     enabled: !!slug,
+  });
+}
+
+export function useProductById(id: string) {
+  return useQuery({
+    queryKey: ['product-by-id', id],
+    queryFn: () => productService.getById(id),
+    enabled: !!id,
+  });
+}
+
+export function useProductById(id: string) {
+  return useQuery({
+    queryKey: ['product-by-id', id],
+    queryFn: () => productService.getById(id),
+    enabled: !!id,
   });
 }
 

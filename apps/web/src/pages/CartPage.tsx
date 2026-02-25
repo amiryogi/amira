@@ -25,20 +25,20 @@ export default function CartPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="font-display text-3xl font-bold text-warm-800">Shopping Cart</h1>
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
+      <h1 className="font-display text-2xl font-bold text-warm-800 sm:text-3xl">Shopping Cart</h1>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-3">
+      <div className="mt-6 grid gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-3">
         {/* Cart Items */}
         <div className="lg:col-span-2">
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {items.map((item) => (
               <div
                 key={item.productId}
-                className="flex gap-4 rounded-xl bg-white p-4 shadow-sm"
+                className="flex gap-3 rounded-xl bg-white p-3 shadow-sm sm:gap-4 sm:p-4"
               >
                 <Link to={`/products/${item.slug}`} className="shrink-0">
-                  <div className="h-24 w-24 overflow-hidden rounded-lg bg-warm-100">
+                  <div className="h-20 w-20 overflow-hidden rounded-xl bg-warm-100 sm:h-24 sm:w-24">
                     <img
                       src={item.image || '/placeholder.jpg'}
                       alt={item.name}
@@ -46,41 +46,41 @@ export default function CartPage() {
                     />
                   </div>
                 </Link>
-                <div className="flex flex-1 flex-col justify-between">
+                <div className="flex min-w-0 flex-1 flex-col justify-between">
                   <div>
                     <Link
                       to={`/products/${item.slug}`}
-                      className="font-medium text-warm-800 hover:text-brand-700"
+                      className="line-clamp-2 text-sm font-medium text-warm-800 hover:text-brand-700 sm:text-base"
                     >
                       {item.name}
                     </Link>
-                    <p className="mt-1 font-semibold text-brand-700">
+                    <p className="mt-0.5 text-sm font-semibold text-brand-700 sm:mt-1 sm:text-base">
                       Rs. {item.price.toLocaleString()}
                     </p>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="mt-2 flex items-center justify-between">
                     <div className="flex items-center rounded-lg border border-warm-200">
                       <button
                         onClick={() =>
                           updateQuantity(item.productId, Math.max(1, item.quantity - 1))
                         }
-                        className="px-3 py-1 text-warm-600 hover:text-warm-800"
+                        className="flex h-8 w-8 items-center justify-center text-warm-600 hover:text-warm-800 sm:h-9 sm:w-9"
                       >
                         −
                       </button>
-                      <span className="w-10 text-center text-sm font-medium">
+                      <span className="w-8 text-center text-sm font-medium sm:w-10">
                         {item.quantity}
                       </span>
                       <button
                         onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                        className="px-3 py-1 text-warm-600 hover:text-warm-800"
+                        className="flex h-8 w-8 items-center justify-center text-warm-600 hover:text-warm-800 sm:h-9 sm:w-9"
                       >
                         +
                       </button>
                     </div>
                     <button
                       onClick={() => removeItem(item.productId)}
-                      className="text-sm text-red-500 hover:text-red-700"
+                      className="text-xs text-red-500 hover:text-red-700 sm:text-sm"
                     >
                       Remove
                     </button>
@@ -91,7 +91,7 @@ export default function CartPage() {
           </div>
           <button
             onClick={clearCart}
-            className="mt-4 text-sm text-warm-500 hover:text-red-600"
+            className="mt-3 text-sm text-warm-500 hover:text-red-600 sm:mt-4"
           >
             Clear cart
           </button>

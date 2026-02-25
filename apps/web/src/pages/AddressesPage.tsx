@@ -14,6 +14,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Skeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
+import type { IAddress } from '@amira/shared';
 
 export default function AddressesPage() {
   const { data: addressesData, isLoading } = useAddresses();
@@ -25,7 +26,8 @@ export default function AddressesPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const addresses = addressesData?.data || [];
+  // useAddresses returns unwrapped IAddress[]
+  const addresses = (addressesData || []) as IAddress[];
 
   const {
     register,
@@ -58,16 +60,17 @@ export default function AddressesPage() {
     }
   };
 
-  const handleEdit = (addr: Record<string, unknown>) => {
-    const a = addr as { _id: string; label: string; street: string; city: string; state: string; postalCode: string; phone: string };
+  const handleEdit = (a: IAddress) => {
     setEditingId(a._id);
     reset({
       label: a.label,
+      fullName: a.fullName,
+      phone: a.phone,
       street: a.street,
       city: a.city,
-      state: a.state,
-      postalCode: a.postalCode,
-      phone: a.phone,
+      district: a.district,
+      province: a.province,
+      postalCode: a.postalCode || '',
     });
     setShowForm(true);
   };
@@ -99,14 +102,16 @@ export default function AddressesPage() {
               {editingId ? 'Edit Address' : 'New Address'}
             </h3>
             <Input label="Label" placeholder="Home, Office, etc." error={errors.label?.message} {...register('label')} />
+            <Input label="Full Name" placeholder="Recipient name" error={errors.fullName?.message} {...register('fullName')} />
+            <Input label="Phone" placeholder="+977..." error={errors.phone?.message} {...register('phone')} />
             <Input label="Street" placeholder="Street address" error={errors.street?.message} {...register('street')} />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input label="City" error={errors.city?.message} {...register('city')} />
-              <Input label="State / Province" error={errors.state?.message} {...register('state')} />
+              <Input label="District" error={errors.district?.message} {...register('district')} />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Input label="Province" error={errors.province?.message} {...register('province')} />
               <Input label="Postal Code" error={errors.postalCode?.message} {...register('postalCode')} />
-              <Input label="Phone" placeholder="+977..." error={errors.phone?.message} {...register('phone')} />
             </div>
             <div className="flex gap-3 pt-2">
               <Button type="submit" isLoading={createMutation.isPending || updateMutation.isPending}>
@@ -131,42 +136,44 @@ export default function AddressesPage() {
           ) : addresses.length === 0 ? (
             <EmptyState title="No addresses" description="Add a shipping address to get started." />
           ) : (
-            addresses.map((addr) => {
-              const a = addr as { _id: string; label: string; street: string; city: string; state: string; postalCode: string; phone: string; isDefault: boolean };
+            addresses.map((a) => {
               return (
-                <div key={a._id} className="flex items-start justify-between rounded-xl bg-white p-5 shadow-sm">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-warm-800">{a.label}</span>
-                      {a.isDefault && (
-                        <span className="rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700">
-                          Default
-                        </span>
-                      )}
+                <div key={a._id} className="rounded-xl bg-white p-4 shadow-sm sm:p-5">
+                  <div className="flex items-start justify-between">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-medium text-warm-800">{a.label}</span>
+                        {a.isDefault && (
+                          <span className="rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700">
+                            Default
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 text-sm text-warm-500">{a.fullName}</p>
+                      <p className="text-sm leading-relaxed text-warm-500">
+                        {a.street}, {a.city}, {a.district}, {a.province} {a.postalCode}
+                      </p>
+                      <p className="text-sm text-warm-500">{a.phone}</p>
                     </div>
-                    <p className="mt-1 text-sm text-warm-500">
-                      {a.street}, {a.city}, {a.state} {a.postalCode}
-                    </p>
-                    <p className="text-sm text-warm-500">{a.phone}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="mt-3 flex flex-wrap gap-3 border-t border-warm-100 pt-3">
                     {!a.isDefault && (
                       <button
                         onClick={() => setDefaultMutation.mutate(a._id)}
-                        className="text-xs text-brand-700 hover:text-brand-800"
+                        className="text-xs font-medium text-brand-700 hover:text-brand-800"
                       >
                         Set Default
                       </button>
                     )}
                     <button
-                      onClick={() => handleEdit(a as never)}
-                      className="text-xs text-warm-500 hover:text-warm-700"
+                      onClick={() => handleEdit(a)}
+                      className="text-xs font-medium text-warm-500 hover:text-warm-700"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => deleteMutation.mutate(a._id)}
-                      className="text-xs text-red-500 hover:text-red-700"
+                      className="text-xs font-medium text-red-500 hover:text-red-700"
                     >
                       Delete
                     </button>

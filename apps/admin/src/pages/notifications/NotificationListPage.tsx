@@ -10,8 +10,10 @@ interface Notification {
   _id: string;
   type: string;
   channel: string;
-  recipient: string;
-  subject?: string;
+  userId: string;
+  user?: { name: string; email: string };
+  title: string;
+  message: string;
   status: string;
   createdAt: string;
 }
@@ -73,8 +75,9 @@ export function NotificationListPage() {
               <TableRow>
                 <TableHead>Type</TableHead>
                 <TableHead>Channel</TableHead>
-                <TableHead>Recipient</TableHead>
-                <TableHead>Subject</TableHead>
+                <TableHead>User</TableHead>
+                <TableHead>Title</TableHead>
+                <TableHead>Message</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Date</TableHead>
               </TableRow>
@@ -83,14 +86,14 @@ export function NotificationListPage() {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
-                    {Array.from({ length: 6 }).map((__, j) => (
+                    {Array.from({ length: 7 }).map((__, j) => (
                       <TableCell key={j}><div className="h-4 w-20 animate-pulse rounded bg-gray-200" /></TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : notifications.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="py-8 text-center text-gray-500">No notifications found</TableCell>
+                  <TableCell colSpan={7} className="py-8 text-center text-gray-500">No notifications found</TableCell>
                 </TableRow>
               ) : (
                 notifications.map((n) => (
@@ -99,8 +102,9 @@ export function NotificationListPage() {
                       <Badge variant="secondary">{n.type?.replace(/_/g, ' ')}</Badge>
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">{n.channel}</TableCell>
-                    <TableCell className="text-sm text-gray-600 max-w-[180px] truncate">{n.recipient}</TableCell>
-                    <TableCell className="text-sm text-gray-600 max-w-[200px] truncate">{n.subject || '—'}</TableCell>
+                    <TableCell className="text-sm text-gray-600 max-w-[180px] truncate">{n.user?.name || n.userId}</TableCell>
+                    <TableCell className="text-sm text-gray-600 max-w-[150px] truncate">{n.title}</TableCell>
+                    <TableCell className="text-sm text-gray-600 max-w-[200px] truncate">{n.message || '—'}</TableCell>
                     <TableCell>
                       <Badge variant={n.status === 'SENT' ? 'success' : n.status === 'FAILED' ? 'destructive' : 'warning'}>
                         {n.status}

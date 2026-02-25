@@ -11,12 +11,7 @@ const router = Router();
 
 router.use(authMiddleware);
 
-// User routes
-router.post('/', validateRequest(createOrderSchema), OrderController.create);
-router.get('/', OrderController.getUserOrders);
-router.get('/:id', validateObjectId(), OrderController.getById);
-
-// Admin routes
+// Admin routes (MUST be before /:id to avoid matching 'admin' as id)
 router.get(
   '/admin/all',
   roleMiddleware(UserRole.ADMIN),
@@ -29,5 +24,10 @@ router.put(
   validateRequest(updateOrderStatusSchema),
   OrderController.updateStatus,
 );
+
+// User routes
+router.post('/', validateRequest(createOrderSchema), OrderController.create);
+router.get('/', OrderController.getUserOrders);
+router.get('/:id', validateObjectId(), OrderController.getById);
 
 export { router as orderRoutes };

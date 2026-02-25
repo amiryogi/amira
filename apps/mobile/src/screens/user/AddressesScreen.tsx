@@ -23,15 +23,17 @@ import { Input } from '@/components/Input';
 import { Button } from '@/components/Button';
 
 interface AddressForm {
+  label: string;
   fullName: string;
   phone: string;
   street: string;
   city: string;
-  state: string;
+  district: string;
+  province: string;
   postalCode: string;
 }
 
-const emptyForm: AddressForm = { fullName: '', phone: '', street: '', city: '', state: '', postalCode: '' };
+const emptyForm: AddressForm = { label: '', fullName: '', phone: '', street: '', city: '', district: '', province: '', postalCode: '' };
 
 export function AddressesScreen() {
   const { data, isLoading, refetch } = useAddresses();
@@ -54,18 +56,20 @@ export function AddressesScreen() {
   const openEdit = (addr: AddressForm & { _id: string }) => {
     setEditingId(addr._id);
     setForm({
+      label: addr.label || '',
       fullName: addr.fullName,
       phone: addr.phone,
       street: addr.street,
       city: addr.city,
-      state: addr.state,
+      district: addr.district || '',
+      province: addr.province,
       postalCode: addr.postalCode || '',
     });
     setModalVisible(true);
   };
 
   const handleSave = async () => {
-    if (!form.fullName || !form.phone || !form.street || !form.city || !form.state) {
+    if (!form.label || !form.fullName || !form.phone || !form.street || !form.city || !form.district || !form.province) {
       Alert.alert('Error', 'Please fill all required fields.');
       return;
     }
@@ -125,7 +129,7 @@ export function AddressesScreen() {
                   )}
                 </View>
                 <Text className="text-sm text-gray-500 mt-0.5">{item.street}</Text>
-                <Text className="text-sm text-gray-500">{item.city}, {item.state} {item.postalCode}</Text>
+                <Text className="text-sm text-gray-500">{item.city}, {item.district && `${item.district}, `}{item.province} {item.postalCode}</Text>
                 <Text className="text-sm text-gray-400 mt-0.5">{item.phone}</Text>
               </View>
               <View className="flex-row gap-2">
@@ -164,11 +168,13 @@ export function AddressesScreen() {
             </TouchableOpacity>
           </View>
           <ScrollView contentContainerStyle={{ padding: 20 }}>
+            <Input label="Label * (e.g. Home, Office)" value={form.label} onChangeText={(t) => setForm((f) => ({ ...f, label: t }))} />
             <Input label="Full Name *" value={form.fullName} onChangeText={(t) => setForm((f) => ({ ...f, fullName: t }))} />
             <Input label="Phone *" value={form.phone} onChangeText={(t) => setForm((f) => ({ ...f, phone: t }))} keyboardType="phone-pad" />
             <Input label="Street *" value={form.street} onChangeText={(t) => setForm((f) => ({ ...f, street: t }))} />
             <Input label="City *" value={form.city} onChangeText={(t) => setForm((f) => ({ ...f, city: t }))} />
-            <Input label="State/Province *" value={form.state} onChangeText={(t) => setForm((f) => ({ ...f, state: t }))} />
+            <Input label="District *" value={form.district} onChangeText={(t) => setForm((f) => ({ ...f, district: t }))} />
+            <Input label="Province *" value={form.province} onChangeText={(t) => setForm((f) => ({ ...f, province: t }))} />
             <Input label="Postal Code" value={form.postalCode} onChangeText={(t) => setForm((f) => ({ ...f, postalCode: t }))} />
             <Button
               title={editingId ? 'Update' : 'Save'}

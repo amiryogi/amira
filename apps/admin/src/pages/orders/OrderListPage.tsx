@@ -30,8 +30,8 @@ interface Order {
   totalAmount: number;
   paymentMethod: string;
   paymentStatus: string;
-  status: string;
-  items: unknown[];
+  orderStatus: string;
+  products: unknown[];
   createdAt: string;
 }
 
@@ -44,7 +44,7 @@ export function OrderListPage() {
     resource: 'orders',
     pagination: { current: page, pageSize: 10 },
     filters: [
-      ...(statusFilter ? [{ field: 'status', operator: 'eq' as const, value: statusFilter }] : []),
+      ...(statusFilter ? [{ field: 'orderStatus', operator: 'eq' as const, value: statusFilter }] : []),
       ...(search ? [{ field: 'search', operator: 'eq' as const, value: search }] : []),
     ],
   });
@@ -57,7 +57,7 @@ export function OrderListPage() {
     const headers = 'Order ID,User,Total,Payment Method,Payment Status,Order Status,Date\n';
     const rows = orders
       .map((o) =>
-        `${o._id},${o.user?.email || ''},${o.totalAmount},${o.paymentMethod},${o.paymentStatus},${o.status},${new Date(o.createdAt).toLocaleDateString()}`
+        `${o._id},${o.user?.email || ''},${o.totalAmount},${o.paymentMethod},${o.paymentStatus},${o.orderStatus},${new Date(o.createdAt).toLocaleDateString()}`
       )
       .join('\n');
     const blob = new Blob([headers + rows], { type: 'text/csv' });
@@ -150,15 +150,15 @@ export function OrderListPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={statusVariant[order.status] || 'secondary'}>
-                        {order.status}
+                      <Badge variant={statusVariant[order.orderStatus] || 'secondary'}>
+                        {order.orderStatus}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-gray-500">
                       {new Date(order.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Link to={`/orders/show/${order._id}`}>
+                      <Link to={`/orders/${order._id}`}>
                         <Button variant="ghost" size="icon"><Eye className="h-4 w-4" /></Button>
                       </Link>
                     </TableCell>

@@ -63,7 +63,7 @@ export function OrderDetailScreen() {
       {/* Items */}
       <View className="bg-white rounded-2xl p-4 mb-4">
         <Text className="font-semibold text-gray-800 mb-3">Items</Text>
-        {order.items?.map((item: { product: string; name: string; price: number; quantity: number; image?: string }, i: number) => (
+        {order.products?.map((item: { product: string; name: string; price: number; quantity: number; image?: string }, i: number) => (
           <View key={i} className="flex-row items-center mb-3">
             {item.image && (
               <Image
@@ -90,20 +90,20 @@ export function OrderDetailScreen() {
       </View>
 
       {/* Shipping Address */}
-      {order.shippingAddress && (
+      {order.deliveryAddress && (
         <View className="bg-white rounded-2xl p-4">
           <Text className="font-semibold text-gray-800 mb-2">Shipping Address</Text>
           <Text className="text-sm text-gray-600">
-            {order.shippingAddress.fullName}
+            {order.deliveryAddress.fullName}
           </Text>
           <Text className="text-sm text-gray-500">
-            {order.shippingAddress.street}, {order.shippingAddress.city}
+            {order.deliveryAddress.street}, {order.deliveryAddress.city}
           </Text>
           <Text className="text-sm text-gray-500">
-            {order.shippingAddress.state} {order.shippingAddress.postalCode}
+            {order.deliveryAddress.district && `${order.deliveryAddress.district}, `}{order.deliveryAddress.province} {order.deliveryAddress.postalCode}
           </Text>
           <Text className="text-sm text-gray-400 mt-1">
-            {order.shippingAddress.phone}
+            {order.deliveryAddress.phone}
           </Text>
         </View>
       )}

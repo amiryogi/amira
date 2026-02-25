@@ -9,12 +9,12 @@ export const Skeleton: React.FC<SkeletonProps> = ({ className = '' }) => (
 );
 
 export const ProductCardSkeleton: React.FC = () => (
-  <div className="overflow-hidden rounded-xl border border-warm-200 bg-white">
-    <Skeleton className="h-56 w-full rounded-none" />
-    <div className="space-y-2 p-4">
+  <div className="overflow-hidden">
+    <Skeleton className="aspect-square w-full rounded-2xl" />
+    <div className="mt-3 space-y-2 px-0.5">
       <Skeleton className="h-4 w-3/4" />
-      <Skeleton className="h-3 w-1/2" />
       <Skeleton className="h-5 w-1/3" />
+      <Skeleton className="h-3 w-1/2" />
     </div>
   </div>
 );

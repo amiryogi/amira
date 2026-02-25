@@ -125,7 +125,7 @@ export function ProductListPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
-                        <Link to={`/products/edit/${p._id}`}>
+                        <Link to={`/products/${p._id}/edit`}>
                           <Button variant="ghost" size="icon"><Pencil className="h-4 w-4" /></Button>
                         </Link>
                         <Button

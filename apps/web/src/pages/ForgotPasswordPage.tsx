@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { forgotPasswordSchema, type ForgotPasswordInput } from '@amira/shared/schemas';
+import { forgotPasswordSchema } from '@amira/shared/schemas';
+import type { ForgotPasswordInput } from '@amira/shared';
 import { useForgotPassword } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';

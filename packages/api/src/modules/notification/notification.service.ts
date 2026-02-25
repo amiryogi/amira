@@ -135,10 +135,15 @@ export class NotificationService {
     };
   }
 
-  private toNotification(doc: INotificationDocument): INotification {
+  private toNotification(doc: INotificationDocument): INotification & { user?: { name: string; email: string } } {
+    const populatedUser = typeof doc.userId === 'object' && doc.userId !== null && 'email' in doc.userId
+      ? doc.userId as unknown as { _id: { toString(): string }; name: string; email: string }
+      : null;
+
     return {
       _id: doc._id as string,
-      userId: doc.userId.toString(),
+      userId: populatedUser ? populatedUser._id.toString() : doc.userId.toString(),
+      ...(populatedUser && { user: { name: populatedUser.name, email: populatedUser.email } }),
       type: doc.type,
       title: doc.title,
       message: doc.message,

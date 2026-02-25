@@ -15,7 +15,7 @@ import type { RouteProp } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import type { AdminStackParamList } from '@/navigation/AdminStack';
-import { useProduct, useCreateProduct, useUpdateProduct } from '@/hooks/useProducts';
+import { useProductById, useCreateProduct, useUpdateProduct } from '@/hooks/useProducts';
 import { useCategories } from '@/hooks/useCategories';
 import { Input } from '@/components/Input';
 import { Button } from '@/components/Button';
@@ -27,7 +27,7 @@ export function AdminProductFormScreen() {
   const navigation = useNavigation();
   const editId = route.params?.id;
 
-  const { data: productData, isLoading: loadingProduct } = useProduct(editId || '');
+  const { data: productData, isLoading: loadingProduct } = useProductById(editId || '');
   const { data: categoriesData } = useCategories();
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
@@ -77,7 +77,7 @@ export function AdminProductFormScreen() {
     formData.append('description', description.trim());
     formData.append('price', price);
     formData.append('stock', stock);
-    formData.append('category', category);
+    formData.append('categoryId', category);
 
     newImages.forEach((img) => {
       const uri = img.uri;

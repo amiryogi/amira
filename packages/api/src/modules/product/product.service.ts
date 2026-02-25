@@ -184,8 +184,11 @@ export class ProductService {
     await Promise.all(deletePromises);
   }
 
-  private toProduct(doc: IProductDocument): IProduct {
-    const category = doc.categoryId as unknown as { _id: string; name: string; slug: string };
+  private toProduct(doc: IProductDocument): IProduct & { category?: { name: string; slug: string } } {
+    const populatedCategory = typeof doc.categoryId === 'object' && doc.categoryId !== null && 'name' in (doc.categoryId as Record<string, unknown>)
+      ? doc.categoryId as unknown as { _id: { toString(): string }; name: string; slug: string }
+      : null;
+
     return {
       _id: doc._id as string,
       name: doc.name,
@@ -195,7 +198,8 @@ export class ProductService {
       discountPrice: doc.discountPrice,
       stock: doc.stock,
       images: doc.images,
-      categoryId: typeof doc.categoryId === 'object' && category?.slug ? (category._id as string) : doc.categoryId.toString(),
+      categoryId: populatedCategory ? populatedCategory._id.toString() : doc.categoryId.toString(),
+      ...(populatedCategory && { category: { name: populatedCategory.name, slug: populatedCategory.slug } }),
       variants: doc.variants,
       averageRating: doc.averageRating,
       totalReviews: doc.totalReviews,

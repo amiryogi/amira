@@ -28,7 +28,14 @@ export const dataProvider: DataProvider = {
       }
     }
 
-    const { data } = await api.get(`/${resource}`, { params });
+    // Admin-specific list endpoints
+    const adminListEndpoints: Record<string, string> = {
+      orders: '/orders/admin/all',
+      products: '/products/admin/all',
+      notifications: '/notifications/admin/all',
+    };
+    const endpoint = adminListEndpoints[resource] || `/${resource}`;
+    const { data } = await api.get(endpoint, { params });
 
     return {
       data: data.data || [],
@@ -55,7 +62,14 @@ export const dataProvider: DataProvider = {
     if (variables instanceof FormData) {
       config.headers = { 'Content-Type': 'multipart/form-data' };
     }
-    const { data } = await api.put(`/${resource}/${id}`, variables, config);
+    // Resource-specific update endpoints
+    const updateEndpoints: Record<string, string> = {
+      orders: `/${resource}/${id}/status`,
+      reviews: `/${resource}/${id}/approve`,
+      users: `/${resource}/${id}/role`,
+    };
+    const endpoint = updateEndpoints[resource] || `/${resource}/${id}`;
+    const { data } = await api.put(endpoint, variables, config);
     return { data: data.data };
   },
 

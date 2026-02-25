@@ -26,7 +26,7 @@ export type UserTabParamList = {
 
 export type UserStackParamList = {
   UserTabs: undefined;
-  Products: { category?: string; search?: string };
+  Products: { categoryId?: string; search?: string };
   ProductDetail: { slug: string };
   Checkout: undefined;
   OrderDetail: { id: string };

@@ -101,14 +101,17 @@ export class OrderService {
     }
 
     // Non-admin can only view their own orders
-    if (!isAdmin && order.userId.toString() !== userId) {
+    const orderUserId = typeof order.userId === 'object' && order.userId !== null && '_id' in order.userId
+      ? (order.userId as unknown as { _id: { toString(): string } })._id.toString()
+      : order.userId.toString();
+    if (!isAdmin && orderUserId !== userId) {
       throw ApiError.forbidden('You can only view your own orders');
     }
 
     return this.toOrder(order);
   }
 
-  async listAllOrders(query: PaginationParams & { orderStatus?: string; paymentStatus?: string }) {
+  async listAllOrders(query: PaginationParams & { orderStatus?: string; paymentStatus?: string; search?: string }) {
     const { skip, limit, sort, page } = buildPagination(query);
 
     const filter: Record<string, unknown> = {};
@@ -117,6 +120,21 @@ export class OrderService {
     }
     if (query.paymentStatus) {
       filter.paymentStatus = query.paymentStatus;
+    }
+    if (query.search) {
+      const searchTerm = query.search.trim();
+      // Search by order ID prefix or by user email (populated)
+      if (searchTerm.match(/^[a-f0-9]{24}$/i)) {
+        filter._id = new mongoose.Types.ObjectId(searchTerm);
+      } else {
+        // Find users matching the search, then filter orders by those userIds
+        const User = mongoose.model('User');
+        const matchingUsers = await User.find(
+          { $or: [{ email: { $regex: searchTerm, $options: 'i' } }, { name: { $regex: searchTerm, $options: 'i' } }] },
+          '_id'
+        ).lean();
+        filter.userId = { $in: matchingUsers.map((u: { _id: mongoose.Types.ObjectId }) => u._id) };
+      }
     }
 
     const [orders, total] = await Promise.all([
@@ -153,10 +171,22 @@ export class OrderService {
     return this.toOrder(updated);
   }
 
-  private toOrder(doc: IOrderDocument): IOrder {
+  private toOrder(doc: IOrderDocument): IOrder & { user?: { name: string; email: string; phone?: string } } {
+    // If userId was populated, extract user info
+    const populatedUser = typeof doc.userId === 'object' && doc.userId !== null && 'email' in doc.userId
+      ? doc.userId as unknown as { _id: mongoose.Types.ObjectId; name: string; email: string; phone?: string }
+      : null;
+
     return {
       _id: doc._id as string,
-      userId: doc.userId.toString(),
+      userId: populatedUser ? populatedUser._id.toString() : doc.userId.toString(),
+      ...(populatedUser && {
+        user: {
+          name: populatedUser.name,
+          email: populatedUser.email,
+          phone: populatedUser.phone,
+        },
+      }),
       products: doc.products.map((p) => ({
         productId: p.productId.toString(),
         name: p.name,

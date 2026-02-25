@@ -50,7 +50,7 @@ export function CategoriesScreen() {
             <TouchableOpacity
               className="flex-1 bg-white rounded-2xl p-5 mb-3 items-center shadow-sm"
               activeOpacity={0.7}
-              onPress={() => navigation.navigate('Products', { category: item.slug })}
+              onPress={() => navigation.navigate('Products', { categoryId: item._id })}
             >
               <View className="bg-brand-100 rounded-full p-3 mb-3">
                 <Ionicons name="grid-outline" size={28} color="#6B4226" />

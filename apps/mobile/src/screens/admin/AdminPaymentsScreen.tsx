@@ -35,6 +35,7 @@ export function AdminPaymentsScreen() {
         page,
         limit: 15,
         status: statusFilter || undefined,
+        search: search || undefined,
       }),
   });
 

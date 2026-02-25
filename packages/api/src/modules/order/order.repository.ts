@@ -8,7 +8,7 @@ export class OrderRepository {
   }
 
   async findById(id: string): Promise<IOrderDocument | null> {
-    return Order.findById(id);
+    return Order.findById(id).populate('userId', 'name email phone');
   }
 
   async findByUser(
@@ -33,7 +33,11 @@ export class OrderRepository {
     skip: number,
     limit: number,
   ): Promise<IOrderDocument[]> {
-    return Order.find(filter).sort(sort).skip(skip).limit(limit);
+    return Order.find(filter)
+      .populate('userId', 'name email phone')
+      .sort(sort)
+      .skip(skip)
+      .limit(limit);
   }
 
   async count(filter: Record<string, unknown> = {}): Promise<number> {
@@ -44,7 +48,8 @@ export class OrderRepository {
     id: string,
     updates: Partial<Pick<IOrderDocument, 'orderStatus' | 'paymentStatus' | 'transactionId'>>,
   ): Promise<IOrderDocument | null> {
-    return Order.findByIdAndUpdate(id, updates, { new: true });
+    return Order.findByIdAndUpdate(id, updates, { new: true })
+      .populate('userId', 'name email phone');
   }
 
   async findRecentByUser(userId: string, limit: number): Promise<IOrderDocument[]> {

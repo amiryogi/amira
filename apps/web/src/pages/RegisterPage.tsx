@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema, type RegisterInput } from '@amira/shared/schemas';
+import { registerSchema } from '@amira/shared/schemas';
+import type { RegisterInput } from '@amira/shared';
 import { useRegister } from '../hooks/useAuth';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -21,8 +22,10 @@ export default function RegisterPage() {
   });
 
   const onSubmit = (data: RegisterInput) => {
-    registerMutation.mutate(data, {
-      onSuccess: () => navigate('/login'),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...registerData } = data;
+    registerMutation.mutate(registerData as RegisterInput, {
+      onSuccess: () => navigate('/'),
     });
   };
 

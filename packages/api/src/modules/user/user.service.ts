@@ -23,7 +23,7 @@ export class UserService {
     return this.toPublicUser(user);
   }
 
-  async listUsers(params: PaginationParams) {
+  async listUsers(params: PaginationParams & { role?: string }) {
     const { skip, limit, sort, page } = buildPagination(params);
 
     const filter: Record<string, unknown> = {};
@@ -32,6 +32,9 @@ export class UserService {
         { name: { $regex: params.search, $options: 'i' } },
         { email: { $regex: params.search, $options: 'i' } },
       ];
+    }
+    if (params.role) {
+      filter.role = params.role;
     }
 
     const { users, total } = await this.userRepo.findAll(filter, skip, limit, sort);

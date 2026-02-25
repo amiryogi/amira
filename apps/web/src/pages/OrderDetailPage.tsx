@@ -21,7 +21,7 @@ export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: orderData, isLoading } = useOrderById(id!);
 
-  const order = orderData?.data as Record<string, unknown> | undefined;
+  const order = orderData as Record<string, unknown> | undefined;
 
   if (isLoading) {
     return (
@@ -50,12 +50,12 @@ export default function OrderDetailPage() {
 
   const o = order as {
     _id: string;
-    status: string;
+    orderStatus: string;
     paymentMethod: string;
     paymentStatus: string;
     totalAmount: number;
-    items: { product: { name: string; slug: string; images: string[] }; quantity: number; price: number; name: string }[];
-    shippingAddress: { label: string; street: string; city: string; state: string; postalCode: string; phone: string };
+    products: { productId: string; name: string; image?: string; quantity: number; price: number }[];
+    deliveryAddress: { label: string; fullName: string; street: string; city: string; district: string; province: string; postalCode?: string; phone: string };
     createdAt: string;
     updatedAt: string;
   };
@@ -83,9 +83,9 @@ export default function OrderDetailPage() {
           </p>
         </div>
         <span
-          className={`rounded-full px-4 py-1.5 text-sm font-medium ${statusColors[o.status] || 'bg-warm-100 text-warm-700'}`}
+          className={`rounded-full px-4 py-1.5 text-sm font-medium ${statusColors[o.orderStatus] || 'bg-warm-100 text-warm-700'}`}
         >
-          {o.status}
+          {o.orderStatus}
         </span>
       </div>
 
@@ -93,23 +93,20 @@ export default function OrderDetailPage() {
       <section className="mt-8 rounded-xl bg-white p-6 shadow-sm">
         <h2 className="font-semibold text-warm-800">Items</h2>
         <div className="mt-4 divide-y divide-warm-100">
-          {o.items.map((item, i) => (
+          {o.products.map((item, i) => (
             <div key={i} className="flex gap-4 py-4 first:pt-0 last:pb-0">
               <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-warm-100">
                 <img
-                  src={item.product?.images?.[0] || '/placeholder.jpg'}
-                  alt={item.name || item.product?.name}
+                  src={item.image || '/placeholder.jpg'}
+                  alt={item.name}
                   className="h-full w-full object-cover"
                 />
               </div>
               <div className="flex flex-1 items-center justify-between">
                 <div>
-                  <Link
-                    to={`/products/${item.product?.slug || ''}`}
-                    className="font-medium text-warm-800 hover:text-brand-700"
-                  >
-                    {item.name || item.product?.name}
-                  </Link>
+                  <span className="font-medium text-warm-800">
+                    {item.name}
+                  </span>
                   <p className="text-sm text-warm-500">Qty: {item.quantity}</p>
                 </div>
                 <span className="font-medium text-warm-800">
@@ -124,16 +121,18 @@ export default function OrderDetailPage() {
       <div className="mt-6 grid gap-6 md:grid-cols-2">
         {/* Shipping */}
         <section className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="font-semibold text-warm-800">Shipping Address</h2>
-          {o.shippingAddress && (
+          <h2 className="font-semibold text-warm-800">Delivery Address</h2>
+          {o.deliveryAddress && (
             <div className="mt-3 text-sm text-warm-600">
-              <p className="font-medium text-warm-700">{o.shippingAddress.label}</p>
-              <p>{o.shippingAddress.street}</p>
+              <p className="font-medium text-warm-700">{o.deliveryAddress.label}</p>
+              <p>{o.deliveryAddress.fullName}</p>
+              <p>{o.deliveryAddress.street}</p>
               <p>
-                {o.shippingAddress.city}, {o.shippingAddress.state}{' '}
-                {o.shippingAddress.postalCode}
+                {o.deliveryAddress.city}, {o.deliveryAddress.district},{' '}
+                {o.deliveryAddress.province}{' '}
+                {o.deliveryAddress.postalCode}
               </p>
-              <p>{o.shippingAddress.phone}</p>
+              <p>{o.deliveryAddress.phone}</p>
             </div>
           )}
         </section>

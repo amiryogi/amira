@@ -10,10 +10,10 @@ import { Search } from 'lucide-react';
 
 interface Payment {
   _id: string;
-  order: string;
+  orderId: string;
   transactionId: string;
   amount: number;
-  method: string;
+  paymentMethod: string;
   status: string;
   verifiedAt?: string;
   createdAt: string;
@@ -29,7 +29,7 @@ export function PaymentListPage() {
     pagination: { current: page, pageSize: 10 },
     filters: [
       ...(statusFilter ? [{ field: 'status', operator: 'eq' as const, value: statusFilter }] : []),
-      ...(search ? [{ field: 'search', operator: 'eq' as const, value: search }] : []),
+      ...(search ? [{ field: 'transactionId', operator: 'eq' as const, value: search }] : []),
     ],
   });
 
@@ -41,7 +41,7 @@ export function PaymentListPage() {
     const headers = 'Transaction ID,Order ID,Amount,Method,Status,Date\n';
     const rows = payments
       .map((p) =>
-        `${p.transactionId},${p.order},${p.amount},${p.method},${p.status},${new Date(p.createdAt).toLocaleDateString()}`
+        `${p.transactionId},${p.orderId},${p.amount},${p.paymentMethod},${p.status},${new Date(p.createdAt).toLocaleDateString()}`
       )
       .join('\n');
     const blob = new Blob([headers + rows], { type: 'text/csv' });
@@ -118,10 +118,10 @@ export function PaymentListPage() {
                   <TableRow key={p._id}>
                     <TableCell className="font-mono text-xs">{p.transactionId || '—'}</TableCell>
                     <TableCell className="font-mono text-xs">
-                      #{(typeof p.order === 'string' ? p.order : '').slice(-8).toUpperCase()}
+                      #{(typeof p.orderId === 'string' ? p.orderId : '').slice(-8).toUpperCase()}
                     </TableCell>
                     <TableCell className="font-medium">Rs. {p.amount.toLocaleString()}</TableCell>
-                    <TableCell>{p.method}</TableCell>
+                    <TableCell>{p.paymentMethod}</TableCell>
                     <TableCell>
                       <Badge variant={p.status === 'PAID' ? 'success' : p.status === 'FAILED' ? 'destructive' : 'warning'}>
                         {p.status}

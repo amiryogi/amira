@@ -17,12 +17,12 @@ const statusVariant: Record<string, 'warning' | 'info' | 'purple' | 'success' | 
 interface OrderDetail {
   _id: string;
   user: { name: string; email: string; phone?: string };
-  items: { name: string; quantity: number; price: number; product?: { images: string[]; slug: string } }[];
-  shippingAddress: { label: string; street: string; city: string; state: string; postalCode: string; phone: string };
+  products: { productId: string; name: string; quantity: number; price: number; image?: string }[];
+  deliveryAddress: { label: string; fullName: string; street: string; city: string; district: string; province: string; postalCode?: string; phone: string };
   totalAmount: number;
   paymentMethod: string;
   paymentStatus: string;
-  status: string;
+  orderStatus: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -39,7 +39,7 @@ export function OrderShowPage() {
   const handleStatusUpdate = () => {
     if (!newStatus) return;
     updateOrder(
-      { resource: 'orders', id: id!, values: { status: newStatus } },
+      { resource: 'orders', id: id!, values: { orderStatus: newStatus } },
       { onSuccess: () => setNewStatus('') }
     );
   };
@@ -63,22 +63,22 @@ export function OrderShowPage() {
         <h1 className="text-2xl font-bold text-gray-900">
           Order #{order._id.slice(-8).toUpperCase()}
         </h1>
-        <Badge variant={statusVariant[order.status]}>{order.status}</Badge>
+        <Badge variant={statusVariant[order.orderStatus]}>{order.orderStatus}</Badge>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Items */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Items ({order.items.length})</CardTitle>
+            <CardTitle>Items ({order.products.length})</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="divide-y divide-gray-100">
-              {order.items.map((item, i) => (
+              {order.products.map((item, i) => (
                 <div key={i} className="flex items-center gap-4 py-3">
                   <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                    {item.product?.images?.[0] && (
-                      <img src={item.product.images[0]} alt="" className="h-full w-full object-cover" />
+                    {item.image && (
+                      <img src={item.image} alt="" className="h-full w-full object-cover" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -113,13 +113,13 @@ export function OrderShowPage() {
                   { value: 'DELIVERED', label: 'Delivered' },
                   { value: 'CANCELLED', label: 'Cancelled' },
                 ]}
-                value={newStatus || order.status}
+                value={newStatus || order.orderStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
               />
               <Button
                 className="w-full"
                 onClick={handleStatusUpdate}
-                disabled={!newStatus || newStatus === order.status}
+                disabled={!newStatus || newStatus === order.orderStatus}
                 isLoading={isUpdating}
               >
                 Update Status
@@ -154,15 +154,16 @@ export function OrderShowPage() {
             </CardContent>
           </Card>
 
-          {/* Shipping */}
-          {order.shippingAddress && (
+          {/* Delivery Address */}
+          {order.deliveryAddress && (
             <Card>
-              <CardHeader><CardTitle>Shipping</CardTitle></CardHeader>
+              <CardHeader><CardTitle>Delivery Address</CardTitle></CardHeader>
               <CardContent className="space-y-1 text-sm text-gray-600">
-                <p className="font-medium text-gray-900">{order.shippingAddress.label}</p>
-                <p>{order.shippingAddress.street}</p>
-                <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.postalCode}</p>
-                <p>{order.shippingAddress.phone}</p>
+                <p className="font-medium text-gray-900">{order.deliveryAddress.label}</p>
+                <p>{order.deliveryAddress.fullName}</p>
+                <p>{order.deliveryAddress.street}</p>
+                <p>{order.deliveryAddress.city}, {order.deliveryAddress.district}, {order.deliveryAddress.province} {order.deliveryAddress.postalCode}</p>
+                <p>{order.deliveryAddress.phone}</p>
               </CardContent>
             </Card>
           )}
