@@ -58,7 +58,7 @@ export class ReviewService {
       throw ApiError.notFound('Review not found');
     }
 
-    if (!isAdmin && review.userId.toString() !== userId) {
+    if (!isAdmin && review.userId.toString() !== userId.toString()) {
       throw ApiError.forbidden('You can only delete your own reviews');
     }
 

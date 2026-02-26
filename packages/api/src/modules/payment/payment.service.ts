@@ -26,7 +26,14 @@ export class PaymentService {
     if (!order) {
       throw ApiError.notFound('Order not found');
     }
-    if (order.userId.toString() !== userId) {
+
+    // Handle populated userId (findById populates userId with user document)
+    const orderUserId =
+      typeof order.userId === 'object' && order.userId !== null && '_id' in order.userId
+        ? (order.userId as unknown as { _id: { toString(): string } })._id.toString()
+        : order.userId.toString();
+
+    if (orderUserId !== userId.toString()) {
       throw ApiError.forbidden('You can only pay for your own orders');
     }
     if (order.paymentMethod !== PaymentMethod.ESEWA) {
@@ -136,7 +143,7 @@ export class PaymentService {
     }
 
     // Verify ownership
-    if (payment.userId.toString() !== userId) {
+    if (payment.userId.toString() !== userId.toString()) {
       logger.warn({ transactionUuid, userId }, 'Payment ownership mismatch');
       throw ApiError.forbidden('Payment does not belong to you');
     }

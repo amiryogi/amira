@@ -13,6 +13,8 @@ const CartPage = lazy(() => import('../pages/CartPage'));
 const CheckoutPage = lazy(() => import('../pages/CheckoutPage'));
 const OrderSuccessPage = lazy(() => import('../pages/OrderSuccessPage'));
 const OrderFailedPage = lazy(() => import('../pages/OrderFailedPage'));
+const PaymentSuccessPage = lazy(() => import('../pages/PaymentSuccessPage'));
+const PaymentFailurePage = lazy(() => import('../pages/PaymentFailurePage'));
 const LoginPage = lazy(() => import('../pages/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/RegisterPage'));
 const ForgotPasswordPage = lazy(() => import('../pages/ForgotPasswordPage'));
@@ -54,6 +56,8 @@ export default function App() {
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path="/order-success" element={<OrderSuccessPage />} />
             <Route path="/order-failed" element={<OrderFailedPage />} />
+            <Route path="/payment/success" element={<PaymentSuccessPage />} />
+            <Route path="/payment/failure" element={<PaymentFailurePage />} />
 
             {/* Protected routes */}
             <Route element={<ProtectedRoute />}>

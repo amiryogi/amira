@@ -104,7 +104,7 @@ export class OrderService {
     const orderUserId = typeof order.userId === 'object' && order.userId !== null && '_id' in order.userId
       ? (order.userId as unknown as { _id: { toString(): string } })._id.toString()
       : order.userId.toString();
-    if (!isAdmin && orderUserId !== userId) {
+    if (!isAdmin && orderUserId !== userId.toString()) {
       throw ApiError.forbidden('You can only view your own orders');
     }
 

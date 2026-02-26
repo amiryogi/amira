@@ -30,8 +30,14 @@ export default function CheckoutPage() {
     }
   }, [addresses, selectedAddress]);
 
+  // Redirect to cart if empty — must be in useEffect to avoid setState-during-render warning
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate('/cart', { replace: true });
+    }
+  }, [items.length, navigate]);
+
   if (items.length === 0) {
-    navigate('/cart');
     return null;
   }
 

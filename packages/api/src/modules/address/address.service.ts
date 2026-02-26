@@ -26,7 +26,7 @@ export class AddressService {
 
   async updateAddress(addressId: string, userId: string, input: UpdateAddressInput): Promise<IAddress> {
     const address = await this.addressRepo.findById(addressId);
-    if (!address || address.userId.toString() !== userId) {
+    if (!address || address.userId.toString() !== userId.toString()) {
       throw ApiError.notFound('Address not found');
     }
 
@@ -41,7 +41,7 @@ export class AddressService {
 
   async deleteAddress(addressId: string, userId: string): Promise<void> {
     const address = await this.addressRepo.findById(addressId);
-    if (!address || address.userId.toString() !== userId) {
+    if (!address || address.userId.toString() !== userId.toString()) {
       throw ApiError.notFound('Address not found');
     }
     await this.addressRepo.softDelete(addressId);
@@ -49,7 +49,7 @@ export class AddressService {
 
   async setDefault(addressId: string, userId: string): Promise<IAddress> {
     const address = await this.addressRepo.findById(addressId);
-    if (!address || address.userId.toString() !== userId) {
+    if (!address || address.userId.toString() !== userId.toString()) {
       throw ApiError.notFound('Address not found');
     }
 
