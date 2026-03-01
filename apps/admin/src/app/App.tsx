@@ -13,6 +13,7 @@ import {
   Users,
   Star,
   Bell,
+  MessageSquare,
   BarChart3,
 } from 'lucide-react';
 
@@ -31,6 +32,8 @@ import { PaymentListPage } from '@/pages/payments/PaymentListPage';
 import { UserListPage } from '@/pages/users/UserListPage';
 import { ReviewListPage } from '@/pages/reviews/ReviewListPage';
 import { NotificationListPage } from '@/pages/notifications/NotificationListPage';
+import { ChatListPage } from '@/pages/chat/ChatListPage';
+import { ChatRoomPage } from '@/pages/chat/ChatRoomPage';
 
 export default function App() {
   return (
@@ -83,6 +86,12 @@ export default function App() {
           meta: { label: 'Notifications', icon: <Bell size={18} /> },
         },
         {
+          name: 'chat',
+          list: '/chat',
+          show: '/chat/:id',
+          meta: { label: 'Chat', icon: <MessageSquare size={18} /> },
+        },
+        {
           name: 'analytics',
           list: '/analytics',
           meta: { label: 'Analytics', icon: <BarChart3 size={18} /> },
@@ -127,6 +136,10 @@ export default function App() {
 
           {/* Notifications */}
           <Route path="/notifications" element={<NotificationListPage />} />
+
+          {/* Chat */}
+          <Route path="/chat" element={<ChatListPage />} />
+          <Route path="/chat/:id" element={<ChatRoomPage />} />
 
           {/* Analytics — reuses DashboardPage (full analytics) */}
           <Route path="/analytics" element={<DashboardPage />} />

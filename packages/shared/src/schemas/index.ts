@@ -9,3 +9,5 @@ export { createReviewSchema } from './review.schema';
 export { userProfileSchema, updateUserSchema } from './user.schema';
 export type { UpdateUserInput } from './user.schema';
 export { paginationSchema } from './pagination.schema';
+export { sendMessageSchema, joinChatSchema } from './chat.schema';
+export type { SendMessageSchemaType, JoinChatSchemaType } from './chat.schema';

@@ -5,6 +5,7 @@ import { ProtectedRoute } from '../components/ProtectedRoute';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { ProductGridSkeleton } from '../components/ui/Skeleton';
 import { useAuthInit } from '../hooks/useAuthInit';
+import { ChatWidget } from '../components/chat/ChatWidget';
 
 const HomePage = lazy(() => import('../pages/HomePage'));
 const ProductsPage = lazy(() => import('../pages/ProductsPage'));
@@ -73,6 +74,7 @@ export default function App() {
           </Route>
         </Routes>
       </Suspense>
+      <ChatWidget />
     </ErrorBoundary>
   );
 }

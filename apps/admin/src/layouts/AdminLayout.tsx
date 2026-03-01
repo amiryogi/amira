@@ -11,6 +11,7 @@ import {
   Star,
   BarChart3,
   Bell,
+  MessageSquare,
   LogOut,
   Menu,
   X,
@@ -28,6 +29,7 @@ const navItems = [
   { label: 'Users', path: '/users', icon: Users },
   { label: 'Reviews', path: '/reviews', icon: Star },
   { label: 'Notifications', path: '/notifications', icon: Bell },
+  { label: 'Chat', path: '/chat', icon: MessageSquare },
   { label: 'Analytics', path: '/analytics', icon: BarChart3 },
 ];
 

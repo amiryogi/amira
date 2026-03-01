@@ -57,6 +57,17 @@ export const config = {
   // CORS
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   adminUrl: process.env.ADMIN_URL || 'http://localhost:5174',
+  cors: {
+    allowedOrigins: [
+      process.env.FRONTEND_URL || 'http://localhost:5173',
+      process.env.ADMIN_URL || 'http://localhost:5174',
+    ].filter(Boolean) as string[],
+  },
+
+  // Redis (optional — for Socket.IO horizontal scaling)
+  redis: {
+    url: process.env.REDIS_URL || '',
+  },
 
   // Bcrypt
   bcryptSaltRounds: 12,

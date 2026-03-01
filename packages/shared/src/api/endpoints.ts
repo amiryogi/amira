@@ -62,4 +62,9 @@ export const API_ENDPOINTS = {
     REVENUE: '/api/v1/analytics/revenue',
     TOP_PRODUCTS: '/api/v1/analytics/top-products',
   },
+  CHAT: {
+    UPLOAD: '/api/v1/chat/upload',
+    ROOMS: '/api/v1/chat/rooms',
+    MESSAGES: '/api/v1/chat/rooms/:roomId/messages',
+  },
 } as const;

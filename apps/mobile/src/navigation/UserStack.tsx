@@ -15,6 +15,7 @@ import { OrderDetailScreen } from '@/screens/user/OrderDetailScreen';
 import { AddressesScreen } from '@/screens/user/AddressesScreen';
 import { EsewaWebViewScreen } from '@/screens/user/EsewaWebViewScreen';
 import { OrderSuccessScreen } from '@/screens/user/OrderSuccessScreen';
+import { ChatScreen } from '@/screens/user/ChatScreen';
 
 export type UserTabParamList = {
   HomeTab: undefined;
@@ -33,6 +34,7 @@ export type UserStackParamList = {
   Addresses: undefined;
   EsewaWebView: { paymentUrl: string; orderId: string };
   OrderSuccess: { orderId: string };
+  Chat: undefined;
 };
 
 const Tab = createBottomTabNavigator<UserTabParamList>();
@@ -91,6 +93,7 @@ export function UserStack() {
       <Stack.Screen name="Addresses" component={AddressesScreen} options={{ title: 'My Addresses' }} />
       <Stack.Screen name="EsewaWebView" component={EsewaWebViewScreen} options={{ title: 'eSewa Payment' }} />
       <Stack.Screen name="OrderSuccess" component={OrderSuccessScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Chat" component={ChatScreen} options={{ title: 'Support Chat' }} />
     </Stack.Navigator>
   );
 }

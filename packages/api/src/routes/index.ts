@@ -10,6 +10,7 @@ import { reviewRoutes } from '../modules/review/review.routes.js';
 import { searchRoutes } from '../modules/search/search.routes.js';
 import { notificationRoutes } from '../modules/notification/notification.routes.js';
 import { analyticsRoutes } from '../modules/analytics/analytics.routes.js';
+import { chatRoutes } from '../modules/chat/chat.routes.js';
 
 const API_PREFIX = '/api/v1';
 
@@ -25,4 +26,5 @@ export function registerRoutes(app: Express): void {
   app.use(`${API_PREFIX}/search`, searchRoutes);
   app.use(`${API_PREFIX}/notifications`, notificationRoutes);
   app.use(`${API_PREFIX}/analytics`, analyticsRoutes);
+  app.use(`${API_PREFIX}/chat`, chatRoutes);
 }

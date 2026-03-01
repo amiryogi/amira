@@ -9,3 +9,5 @@ export const TOKEN_EXPIRY = {
   REFRESH_TOKEN: '7d',
   RESET_TOKEN_HOURS: 1,
 } as const;
+
+export { CHAT_EVENTS, CHAT_DEFAULTS } from './chat.constants';

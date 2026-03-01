@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@amira/shared": "workspace:*",
+    "@hookform/resolvers": "^3.9.0",
     "@tanstack/react-query": "^5.62.0",
     "axios": "^1.7.9",
     "react": "^18.3.1",
@@ -22,24 +23,24 @@
     "react-hook-form": "^7.54.0",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^7.1.0",
-    "zustand": "^5.0.2",
-    "@hookform/resolvers": "^3.9.0",
-    "zod": "^3.24.0"
+    "socket.io-client": "^4.8.3",
+    "zod": "^3.24.0",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@testing-library/jest-dom": "^6.6.0",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.0",
     "@types/react": "^18.3.14",
     "@types/react-dom": "^18.3.4",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "jsdom": "^25.0.0",
+    "msw": "^2.7.0",
     "tailwindcss": "^4.0.0",
-    "@tailwindcss/vite": "^4.0.0",
     "typescript": "~5.7.0",
     "vite": "^6.0.0",
-    "vitest": "^2.1.0",
-    "@testing-library/react": "^16.1.0",
-    "@testing-library/jest-dom": "^6.6.0",
-    "@testing-library/user-event": "^14.5.0",
-    "jsdom": "^25.0.0",
-    "msw": "^2.7.0"
+    "vitest": "^2.1.0"
   }
 }

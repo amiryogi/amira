@@ -10,6 +10,8 @@ import { AdminProductsScreen } from '@/screens/admin/AdminProductsScreen';
 import { AdminProductFormScreen } from '@/screens/admin/AdminProductFormScreen';
 import { AdminPaymentsScreen } from '@/screens/admin/AdminPaymentsScreen';
 import { AdminUsersScreen } from '@/screens/admin/AdminUsersScreen';
+import { AdminChatListScreen } from '@/screens/admin/AdminChatListScreen';
+import { AdminChatRoomScreen } from '@/screens/admin/AdminChatRoomScreen';
 
 export type AdminTabParamList = {
   DashboardTab: undefined;
@@ -17,12 +19,14 @@ export type AdminTabParamList = {
   ProductsTab: undefined;
   PaymentsTab: undefined;
   UsersTab: undefined;
+  ChatTab: undefined;
 };
 
 export type AdminStackParamList = {
   AdminTabs: undefined;
   AdminOrderDetail: { id: string };
   AdminProductForm: { id?: string };
+  AdminChatRoom: { roomId: string; customerName?: string };
 };
 
 const Tab = createBottomTabNavigator<AdminTabParamList>();
@@ -49,6 +53,7 @@ function AdminTabs() {
             ProductsTab: 'cube-outline',
             PaymentsTab: 'card-outline',
             UsersTab: 'people-outline',
+            ChatTab: 'chatbubbles-outline',
           };
           return <Ionicons name={icons[route.name]} size={size} color={color} />;
         },
@@ -59,6 +64,7 @@ function AdminTabs() {
       <Tab.Screen name="ProductsTab" component={AdminProductsScreen} options={{ tabBarLabel: 'Products' }} />
       <Tab.Screen name="PaymentsTab" component={AdminPaymentsScreen} options={{ tabBarLabel: 'Payments' }} />
       <Tab.Screen name="UsersTab" component={AdminUsersScreen} options={{ tabBarLabel: 'Users' }} />
+      <Tab.Screen name="ChatTab" component={AdminChatListScreen} options={{ tabBarLabel: 'Chat' }} />
     </Tab.Navigator>
   );
 }
@@ -76,6 +82,7 @@ export function AdminStack() {
       <Stack.Screen name="AdminTabs" component={AdminTabs} options={{ headerShown: false }} />
       <Stack.Screen name="AdminOrderDetail" component={AdminOrderDetailScreen} options={{ title: 'Order Details' }} />
       <Stack.Screen name="AdminProductForm" component={AdminProductFormScreen} options={{ title: 'Product' }} />
+      <Stack.Screen name="AdminChatRoom" component={AdminChatRoomScreen} options={{ title: 'Chat' }} />
     </Stack.Navigator>
   );
 }

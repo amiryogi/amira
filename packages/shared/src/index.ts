@@ -49,5 +49,25 @@ export {
   TOKEN_EXPIRY,
 } from './constants/index';
 
+// ─── Chat Enums ───
+export { ChatRoomStatus, MessageStatus, SenderRole } from './enums/chat.enum';
+
+// ─── Chat Types ───
+export type {
+  IChatRoom,
+  IChatRoomPopulated,
+  IChatMessage,
+  ChatAttachment,
+  SendMessageInput,
+  JoinChatInput,
+} from './types/chat.types';
+
+// ─── Chat Constants ───
+export { CHAT_EVENTS, CHAT_DEFAULTS } from './constants/chat.constants';
+
+// ─── Chat Schemas ───
+export { sendMessageSchema, joinChatSchema } from './schemas/chat.schema';
+export type { SendMessageSchemaType, JoinChatSchemaType } from './schemas/chat.schema';
+
 // ─── API Endpoints ───
 export { API_ENDPOINTS } from './api/endpoints';
