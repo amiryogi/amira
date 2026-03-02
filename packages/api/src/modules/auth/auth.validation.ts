@@ -1,6 +1,6 @@
 export {
   loginSchema,
-  registerSchema,
+  registerApiSchema as registerSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
 } from '@amira/shared/schemas';

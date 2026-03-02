@@ -1,0 +1,18 @@
+• Packages in scope: @amira/admin
+• Running dev in 1 packages
+• Remote caching disabled
+@amira/shared:build: cache hit, replaying logs e5b79219340534df
+@amira/shared:build: 
+@amira/shared:build: > @amira/shared@1.0.0 build D:\amira\amira\packages\shared
+@amira/shared:build: > tsc -b --force
+@amira/shared:build: 
+@amira/admin:dev: cache bypass, force executing ce7b4daf1129db79
+@amira/admin:dev: 
+@amira/admin:dev: > @amira/admin@1.0.0 dev D:\amira\amira\apps\admin
+@amira/admin:dev: > vite
+@amira/admin:dev: 
+@amira/admin:dev: 
+@amira/admin:dev:   [32m[1mVITE[22m v6.4.1[39m  [2mready in [0m[1m928[22m[2m[0m ms[22m
+@amira/admin:dev: 
+@amira/admin:dev:   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5174[22m/[39m
+@amira/admin:dev: [2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m

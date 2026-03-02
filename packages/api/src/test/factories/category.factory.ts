@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { Category, ICategoryDocument } from '../../modules/category/category.model.js';
 
 interface CreateCategoryOverrides {

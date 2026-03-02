@@ -1,5 +1,4 @@
 import { User, IUserDocument } from './user.model.js';
-import mongoose from 'mongoose';
 import { UserRole } from '@amira/shared';
 
 export class UserRepository {

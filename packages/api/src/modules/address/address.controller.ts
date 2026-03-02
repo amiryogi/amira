@@ -7,27 +7,27 @@ const addressService = new AddressService();
 
 export class AddressController {
   static getAll = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const addresses = await addressService.getUserAddresses(req.user!._id as string);
+    const addresses = await addressService.getUserAddresses(String(req.user!._id));
     sendResponse(res, 200, 'Addresses retrieved', addresses);
   });
 
   static create = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const address = await addressService.createAddress(req.user!._id as string, req.body);
+    const address = await addressService.createAddress(String(req.user!._id), req.body);
     sendResponse(res, 201, 'Address created', address);
   });
 
   static update = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const address = await addressService.updateAddress(req.params.id, req.user!._id as string, req.body);
+    const address = await addressService.updateAddress(req.params.id as string, String(req.user!._id), req.body);
     sendResponse(res, 200, 'Address updated', address);
   });
 
   static delete = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    await addressService.deleteAddress(req.params.id, req.user!._id as string);
+    await addressService.deleteAddress(req.params.id as string, String(req.user!._id));
     sendResponse(res, 200, 'Address deleted');
   });
 
   static setDefault = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const address = await addressService.setDefault(req.params.id, req.user!._id as string);
+    const address = await addressService.setDefault(req.params.id as string, String(req.user!._id));
     sendResponse(res, 200, 'Default address set', address);
   });
 }

@@ -41,6 +41,10 @@ export class ChatService {
     return this.chatRepository.findRoomById(roomId);
   }
 
+  async findRoomByIdPopulated(roomId: string): Promise<IChatRoomDocument | null> {
+    return this.chatRepository.findRoomByIdPopulated(roomId);
+  }
+
   async verifyRoomAccess(
     roomId: string,
     userId: string,

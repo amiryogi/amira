@@ -88,7 +88,7 @@ export class CategoryService {
 
   private toCategory(doc: ICategoryDocument): ICategory {
     return {
-      _id: doc._id as string,
+      _id: String(doc._id),
       name: doc.name,
       slug: doc.slug,
       description: doc.description,

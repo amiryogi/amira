@@ -3,7 +3,7 @@ import { PaymentService } from '../payment.service.js';
 import { createTestUser } from '../../../test/factories/user.factory.js';
 import { createTestOrder } from '../../../test/factories/order.factory.js';
 import { createTestProduct } from '../../../test/factories/product.factory.js';
-import { PaymentMethod, PaymentStatus, OrderStatus } from '@amira/shared';
+import { PaymentMethod, PaymentStatus } from '@amira/shared';
 import { Payment } from '../payment.model.js';
 import mongoose from 'mongoose';
 

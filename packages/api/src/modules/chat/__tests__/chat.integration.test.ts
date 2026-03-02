@@ -6,7 +6,6 @@ import { Server as SocketIOServer } from 'socket.io';
 import { createTestApp, generateTestAccessToken } from '../../../test/helpers.js';
 import { createTestUser, createTestAdmin } from '../../../test/factories/user.factory.js';
 import type { IUserDocument } from '../../user/user.model.js';
-import { User } from '../../user/user.model.js';
 import { initializeSocket } from '../../../config/socket.js';
 import { CHAT_EVENTS, CHAT_DEFAULTS } from '@amira/shared';
 import { ChatRoom } from '../chat.model.js';

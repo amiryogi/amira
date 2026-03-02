@@ -62,7 +62,7 @@ export class UserService {
 
   private toPublicUser(user: IUserDocument): IUserPublic {
     return {
-      _id: user._id as string,
+      _id: String(user._id),
       name: user.name,
       email: user.email,
       role: user.role,

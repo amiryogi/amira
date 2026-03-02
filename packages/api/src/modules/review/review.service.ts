@@ -47,7 +47,7 @@ export class ReviewService {
       rating: input.rating,
       comment: input.comment,
       isApproved: false,
-    } as Partial<IReviewDocument>);
+    } as unknown as Partial<IReviewDocument>);
 
     return this.toReview(review);
   }
@@ -118,7 +118,7 @@ export class ReviewService {
       : null;
 
     return {
-      _id: doc._id as string,
+      _id: String(doc._id),
       productId: populatedProduct ? populatedProduct._id.toString() : doc.productId.toString(),
       userId: populatedUser ? populatedUser._id.toString() : doc.userId.toString(),
       rating: doc.rating,

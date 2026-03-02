@@ -95,7 +95,7 @@ export class NotificationService {
     });
 
     await this.notificationRepo.updateStatus(
-      notification._id as string,
+      String(notification._id),
       sent ? NotificationStatus.SENT : NotificationStatus.FAILED,
       sent ? new Date() : undefined,
     );
@@ -141,7 +141,7 @@ export class NotificationService {
       : null;
 
     return {
-      _id: doc._id as string,
+      _id: String(doc._id),
       userId: populatedUser ? populatedUser._id.toString() : doc.userId.toString(),
       ...(populatedUser && { user: { name: populatedUser.name, email: populatedUser.email } }),
       type: doc.type,

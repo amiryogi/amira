@@ -128,8 +128,8 @@ export function ChatRoomPage() {
       );
     };
 
-    const handleTyping = (data: { userId: string; name: string }) => {
-      setTypingUser(data.name);
+    const handleTyping = (data: { userId: string; userName: string; name?: string }) => {
+      setTypingUser(data.userName || data.name || 'Customer');
     };
 
     const handleStopTyping = () => {

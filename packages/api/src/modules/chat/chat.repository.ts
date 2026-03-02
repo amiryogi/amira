@@ -76,6 +76,13 @@ export class ChatRepository {
     return ChatRoom.findById(roomId);
   }
 
+  async findRoomByIdPopulated(roomId: string): Promise<IChatRoomDocument | null> {
+    return ChatRoom.findById(roomId)
+      .populate('customerId', 'name email')
+      .populate('adminId', 'name')
+      .lean() as unknown as IChatRoomDocument | null;
+  }
+
   async findRoomByCustomer(customerId: string): Promise<IChatRoomDocument | null> {
     return ChatRoom.findOne({
       customerId: new mongoose.Types.ObjectId(customerId),

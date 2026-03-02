@@ -7,12 +7,12 @@ const userService = new UserService();
 
 export class UserController {
   static getProfile = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const user = await userService.getProfile(req.user!._id as string);
+    const user = await userService.getProfile(String(req.user!._id));
     sendResponse(res, 200, 'Profile retrieved', user);
   });
 
   static updateProfile = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const user = await userService.updateProfile(req.user!._id as string, req.body);
+    const user = await userService.updateProfile(String(req.user!._id), req.body);
     sendResponse(res, 200, 'Profile updated', user);
   });
 
@@ -23,15 +23,15 @@ export class UserController {
 
   static updateRole = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const user = await userService.updateRole(
-      req.params.id,
+      req.params.id as string,
       req.body.role,
-      req.user!._id as string,
+      String(req.user!._id),
     );
     sendResponse(res, 200, 'Role updated', user);
   });
 
   static deleteUser = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    await userService.softDeleteUser(req.params.id, req.user!._id as string);
+    await userService.softDeleteUser(req.params.id as string, String(req.user!._id));
     sendResponse(res, 200, 'User deleted');
   });
 }

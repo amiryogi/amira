@@ -23,9 +23,9 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "clean": "rimraf dist",
+    "build": "tsc -b --force",
+    "dev": "tsc -b --watch",
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

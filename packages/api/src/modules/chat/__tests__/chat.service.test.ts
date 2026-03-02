@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import mongoose from 'mongoose';
 import { ChatService } from '../chat.service.js';
 import { ChatRoom } from '../chat.model.js';

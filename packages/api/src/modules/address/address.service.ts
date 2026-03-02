@@ -20,7 +20,7 @@ export class AddressService {
       await this.addressRepo.clearDefaultForUser(userId);
     }
 
-    const address = await this.addressRepo.create({ ...input, userId } as Partial<IAddressDocument>);
+    const address = await this.addressRepo.create({ ...input, userId } as unknown as Partial<IAddressDocument>);
     return this.toAddress(address);
   }
 
@@ -61,7 +61,7 @@ export class AddressService {
 
   private toAddress(doc: IAddressDocument): IAddress {
     return {
-      _id: doc._id as string,
+      _id: String(doc._id),
       userId: doc.userId.toString(),
       label: doc.label,
       fullName: doc.fullName,

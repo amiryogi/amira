@@ -56,7 +56,7 @@ export class SearchService {
 
   private toProduct(doc: IProductDocument): IProduct {
     return {
-      _id: doc._id as string,
+      _id: String(doc._id),
       name: doc.name,
       slug: doc.slug,
       description: doc.description,

@@ -5,8 +5,8 @@
     "rootDir": "src",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "declaration": true,
-    "composite": true
+    "declaration": false,
+    "declarationMap": false
   },
   "include": ["src"],
   "references": [{ "path": "../shared" }]

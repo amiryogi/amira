@@ -17,7 +17,7 @@ export class CategoryController {
   });
 
   static getBySlug = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const category = await categoryService.getBySlug(req.params.slug);
+    const category = await categoryService.getBySlug(req.params.slug as string);
     sendResponse(res, 200, 'Category retrieved', category);
   });
 
@@ -27,12 +27,12 @@ export class CategoryController {
   });
 
   static update = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const category = await categoryService.updateCategory(req.params.id, req.body);
+    const category = await categoryService.updateCategory(req.params.id as string, req.body);
     sendResponse(res, 200, 'Category updated', category);
   });
 
   static delete = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    await categoryService.deleteCategory(req.params.id);
+    await categoryService.deleteCategory(req.params.id as string);
     sendResponse(res, 200, 'Category deleted');
   });
 }

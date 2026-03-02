@@ -31,7 +31,7 @@ export class PaymentService {
     const orderUserId =
       typeof order.userId === 'object' && order.userId !== null && '_id' in order.userId
         ? (order.userId as unknown as { _id: { toString(): string } })._id.toString()
-        : order.userId.toString();
+        : String(order.userId);
 
     if (orderUserId !== userId.toString()) {
       throw ApiError.forbidden('You can only pay for your own orders');
@@ -152,7 +152,7 @@ export class PaymentService {
     const totalAmount = parseFloat(totalAmountStr.replace(/,/g, ''));
     if (Math.abs(totalAmount - payment.amount) > 0.01) {
       logger.warn({ transactionUuid, expected: payment.amount, received: totalAmount }, 'Amount mismatch');
-      await this.paymentRepo.updateStatus(payment._id as string, PaymentStatus.FAILED, {
+      await this.paymentRepo.updateStatus(String(payment._id), PaymentStatus.FAILED, {
         rawResponse: esewaResponse as unknown as Record<string, unknown>,
         failureReason: `Amount mismatch: expected ${payment.amount}, got ${totalAmount}`,
       });
@@ -166,7 +166,7 @@ export class PaymentService {
     try {
       if (status === 'COMPLETE') {
         await this.paymentRepo.updateStatus(
-          payment._id as string,
+          String(payment._id),
           PaymentStatus.PAID,
           {
             rawResponse: esewaResponse as unknown as Record<string, unknown>,
@@ -182,7 +182,7 @@ export class PaymentService {
         });
       } else {
         await this.paymentRepo.updateStatus(
-          payment._id as string,
+          String(payment._id),
           PaymentStatus.FAILED,
           {
             rawResponse: esewaResponse as unknown as Record<string, unknown>,
@@ -233,7 +233,7 @@ export class PaymentService {
 
   private toPayment(doc: IPaymentDocument): IPayment {
     return {
-      _id: doc._id as string,
+      _id: String(doc._id),
       orderId: doc.orderId.toString(),
       userId: doc.userId.toString(),
       paymentMethod: doc.paymentMethod,

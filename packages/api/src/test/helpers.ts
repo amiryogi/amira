@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import { registerRoutes } from '../routes/index.js';
 import { errorHandler } from '../middlewares/errorHandler.js';
 import jwt from 'jsonwebtoken';
-import type { IUserDocument } from '../modules/user/user.model.js';
+import { expect } from 'vitest';
 import supertest from 'supertest';
 
 /**
@@ -71,7 +71,7 @@ export function expectSuccess(body: Record<string, unknown>) {
 /**
  * Assert standard error API response shape.
  */
-export function expectError(body: Record<string, unknown>, statusCode?: number) {
+export function expectError(body: Record<string, unknown>, _statusCode?: number) {
   expect(body).toHaveProperty('success', false);
   expect(body).toHaveProperty('message');
 }

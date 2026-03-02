@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import { User, IUserDocument } from '../../modules/user/user.model.js';
 import { UserRole } from '@amira/shared';

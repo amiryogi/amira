@@ -13,10 +13,9 @@ class SocketService {
     const token = getAccessToken();
     if (!token) throw new Error('No auth token available');
 
-    const baseUrl =
-      import.meta.env.VITE_SOCKET_URL ||
-      import.meta.env.VITE_API_URL?.replace('/api/v1', '') ||
-      '';
+    // In dev: empty string → connects through Vite proxy (ws: true)
+    // In prod: set VITE_SOCKET_URL to the API server origin
+    const baseUrl = import.meta.env.VITE_SOCKET_URL || '';
 
     this.socket = io(`${baseUrl}${CHAT_DEFAULTS.NAMESPACE}`, {
       auth: { token },

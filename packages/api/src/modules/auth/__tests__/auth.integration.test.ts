@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import supertest from 'supertest';
 import { createTestApp, expectSuccess, expectError } from '../../../test/helpers.js';
-import { User } from '../../user/user.model.js';
 
 const app = createTestApp();
 
@@ -149,7 +148,7 @@ describe('Auth Integration Tests', () => {
   describe('Full auth flow', () => {
     it('should register → login → refresh → logout', async () => {
       // 1. Register
-      const registerRes = await supertest(app)
+      await supertest(app)
         .post('/api/v1/auth/register')
         .send({
           name: 'Flow User',

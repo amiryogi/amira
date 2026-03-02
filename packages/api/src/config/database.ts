@@ -7,7 +7,7 @@ export const connectDB = async (): Promise<void> => {
     await mongoose.connect(config.mongoUri);
     logger.info('MongoDB connected successfully');
   } catch (error) {
-    logger.error('MongoDB connection error:', error);
+    logger.error({ err: error }, 'MongoDB connection error');
     process.exit(1);
   }
 };
@@ -17,5 +17,5 @@ mongoose.connection.on('disconnected', () => {
 });
 
 mongoose.connection.on('error', (err) => {
-  logger.error('MongoDB error:', err);
+  logger.error({ err }, 'MongoDB error');
 });

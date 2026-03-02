@@ -8,7 +8,7 @@ const notificationService = new NotificationService();
 export class NotificationController {
   static getUserNotifications = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const result = await notificationService.getUserNotifications(
-      req.user!._id as string,
+      String(req.user!._id),
       req.query as Record<string, string>,
     );
     sendPaginatedResponse(res, 'Notifications retrieved', result.data, result.pagination);

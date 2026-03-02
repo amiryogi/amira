@@ -6,7 +6,6 @@ import { buildPagination, buildPaginationMeta } from '../../utils/pagination.js'
 import {
   OrderStatus,
   PaymentStatus,
-  PaymentMethod,
 } from '@amira/shared';
 import type { CreateOrderInput, IOrder, PaginationParams } from '@amira/shared';
 import type { IOrderDocument, IOrderDeliveryAddress } from './order.model.js';
@@ -103,7 +102,7 @@ export class OrderService {
     // Non-admin can only view their own orders
     const orderUserId = typeof order.userId === 'object' && order.userId !== null && '_id' in order.userId
       ? (order.userId as unknown as { _id: { toString(): string } })._id.toString()
-      : order.userId.toString();
+        : String(order.userId);
     if (!isAdmin && orderUserId !== userId.toString()) {
       throw ApiError.forbidden('You can only view your own orders');
     }
@@ -133,7 +132,7 @@ export class OrderService {
           { $or: [{ email: { $regex: searchTerm, $options: 'i' } }, { name: { $regex: searchTerm, $options: 'i' } }] },
           '_id'
         ).lean();
-        filter.userId = { $in: matchingUsers.map((u: { _id: mongoose.Types.ObjectId }) => u._id) };
+        filter.userId = { $in: matchingUsers.map((u) => u._id) };
       }
     }
 
@@ -178,7 +177,7 @@ export class OrderService {
       : null;
 
     return {
-      _id: doc._id as string,
+      _id: String(doc._id),
       userId: populatedUser ? populatedUser._id.toString() : doc.userId.toString(),
       ...(populatedUser && {
         user: {

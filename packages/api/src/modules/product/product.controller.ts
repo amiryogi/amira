@@ -17,12 +17,12 @@ export class ProductController {
   });
 
   static getBySlug = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const product = await productService.getBySlug(req.params.slug);
+    const product = await productService.getBySlug(req.params.slug as string);
     sendResponse(res, 200, 'Product retrieved', product);
   });
 
   static getById = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const product = await productService.getById(req.params.id);
+    const product = await productService.getById(req.params.id as string);
     sendResponse(res, 200, 'Product retrieved', product);
   });
 
@@ -48,7 +48,7 @@ export class ProductController {
     if (typeof body.variants === 'string') body.variants = JSON.parse(body.variants);
 
     const product = await productService.updateProduct(
-      req.params.id,
+      req.params.id as string,
       body,
       req.files as Express.Multer.File[],
     );
@@ -56,7 +56,7 @@ export class ProductController {
   });
 
   static delete = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    await productService.deleteProduct(req.params.id);
+    await productService.deleteProduct(req.params.id as string);
     sendResponse(res, 200, 'Product deleted');
   });
 }

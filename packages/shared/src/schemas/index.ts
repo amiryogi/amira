@@ -1,5 +1,5 @@
-export { loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema, resetPasswordFormSchema } from './auth.schema';
-export type { LoginInput, RegisterInput, ForgotPasswordInput, ResetPasswordInput, ResetPasswordFormInput } from './auth.schema';
+export { loginSchema, registerSchema, registerApiSchema, forgotPasswordSchema, resetPasswordSchema, resetPasswordFormSchema } from './auth.schema';
+export type { LoginInput, RegisterInput, RegisterApiInput, ForgotPasswordInput, ResetPasswordInput, ResetPasswordFormInput } from './auth.schema';
 export { createProductSchema, updateProductSchema } from './product.schema';
 export { createCategorySchema, updateCategorySchema } from './category.schema';
 export { addressSchema, createAddressSchema, updateAddressSchema } from './address.schema';

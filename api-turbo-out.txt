@@ -1,0 +1,13 @@
+• Packages in scope: @amira/api
+• Running dev in 1 packages
+• Remote caching disabled
+@amira/shared:build: cache hit, replaying logs e5b79219340534df
+@amira/shared:build: 
+@amira/shared:build: > @amira/shared@1.0.0 build D:\amira\amira\packages\shared
+@amira/shared:build: > tsc -b --force
+@amira/shared:build: 
+@amira/api:dev: cache bypass, force executing 8a9d218292459083
+@amira/api:dev: 
+@amira/api:dev: > @amira/api@1.0.0 dev D:\amira\amira\packages\api
+@amira/api:dev: > tsx watch src/server.ts
+@amira/api:dev: 

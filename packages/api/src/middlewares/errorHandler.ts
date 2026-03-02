@@ -29,7 +29,7 @@ export function errorHandler(
   }
 
   // Mongoose duplicate key
-  if (err.name === 'MongoServerError' && (err as Record<string, unknown>).code === 11000) {
+  if (err.name === 'MongoServerError' && (err as unknown as Record<string, unknown>).code === 11000) {
     res.status(409).json({
       success: false,
       message: 'Duplicate entry',
@@ -54,7 +54,7 @@ export function errorHandler(
     return;
   }
 
-  logger.error('Unhandled error:', err);
+  logger.error({ err }, 'Unhandled error');
 
   res.status(500).json({
     success: false,

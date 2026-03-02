@@ -7,12 +7,12 @@ const paymentService = new PaymentService();
 
 export class PaymentController {
   static createEsewa = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const paymentData = await paymentService.createEsewaPayment(req.body.orderId, req.user!._id as string);
+    const paymentData = await paymentService.createEsewaPayment(req.body.orderId, String(req.user!._id));
     sendResponse(res, 200, 'eSewa payment data generated', paymentData);
   });
 
   static verifyEsewa = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const payment = await paymentService.verifyEsewaPayment(req.body.data, req.user!._id as string);
+    const payment = await paymentService.verifyEsewaPayment(req.body.data, String(req.user!._id));
     sendResponse(res, 200, 'Payment verified', payment);
   });
 
@@ -22,7 +22,7 @@ export class PaymentController {
   });
 
   static getById = asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const payment = await paymentService.getPaymentById(req.params.id);
+    const payment = await paymentService.getPaymentById(req.params.id as string);
     sendResponse(res, 200, 'Payment retrieved', payment);
   });
 }

@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { Order } from '../order/order.model.js';
 import { Payment } from '../payment/payment.model.js';
 import { Product } from '../product/product.model.js';

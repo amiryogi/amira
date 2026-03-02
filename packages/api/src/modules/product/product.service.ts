@@ -99,7 +99,7 @@ export class ProductService {
       ...input,
       slug,
       images,
-    } as Partial<IProductDocument>);
+    } as unknown as Partial<IProductDocument>);
 
     return this.toProduct(product);
   }
@@ -185,12 +185,12 @@ export class ProductService {
   }
 
   private toProduct(doc: IProductDocument): IProduct & { category?: { name: string; slug: string } } {
-    const populatedCategory = typeof doc.categoryId === 'object' && doc.categoryId !== null && 'name' in (doc.categoryId as Record<string, unknown>)
+    const populatedCategory = typeof doc.categoryId === 'object' && doc.categoryId !== null && 'name' in (doc.categoryId as unknown as Record<string, unknown>)
       ? doc.categoryId as unknown as { _id: { toString(): string }; name: string; slug: string }
       : null;
 
     return {
-      _id: doc._id as string,
+      _id: String(doc._id),
       name: doc.name,
       slug: doc.slug,
       description: doc.description,

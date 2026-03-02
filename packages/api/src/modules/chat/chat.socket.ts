@@ -29,48 +29,52 @@ function getJoinedRooms(socketId: string): Set<string> {
   return socketRooms.get(socketId)!;
 }
 
-function emitError(socket: Socket, message: string): void {
-  socket.emit(CHAT_EVENTS.CHAT_ERROR, { message });
-}
-
 export function registerChatHandlers(namespace: Namespace, socket: Socket): void {
   const userId = socket.data.userId as string;
   const userRole = socket.data.userRole as string;
   const userName = socket.data.userName as string;
 
   // ─── JOIN CHAT ───
-  socket.on(CHAT_EVENTS.JOIN_CHAT, async (data: unknown) => {
+  socket.on(CHAT_EVENTS.JOIN_CHAT, async (data: unknown, callback?: (response: unknown) => void) => {
+    const cb = typeof callback === 'function' ? callback : (() => {});
     try {
       const parsed = joinChatSchema.safeParse(data);
       if (!parsed.success) {
-        return emitError(socket, parsed.error.errors[0]?.message ?? 'Invalid input');
+        return cb({ error: parsed.error.errors[0]?.message ?? 'Invalid input' });
       }
 
       let roomId = parsed.data.roomId;
+      let room;
 
       // If USER → find or create their room
       if (userRole === UserRole.USER) {
-        const room = await chatService.findOrCreateRoom(userId);
+        room = await chatService.findOrCreateRoom(userId);
         roomId = room._id.toString();
       }
 
       if (!roomId) {
-        return emitError(socket, 'Room ID is required for admin');
+        return cb({ error: 'Room ID is required for admin' });
       }
 
       // Verify access
       const hasAccess = await chatService.verifyRoomAccess(roomId, userId, userRole);
       if (!hasAccess) {
-        return emitError(socket, 'Access denied to this chat room');
+        return cb({ error: 'Access denied to this chat room' });
       }
 
       // Join the Socket.IO room
       await socket.join(roomId);
       getJoinedRooms(socket.id).add(roomId);
 
-      // If ADMIN → assign self to room
+      // If ADMIN → assign self to room and get populated room
       if (userRole === UserRole.ADMIN) {
         await chatService.assignAdminToRoom(roomId, userId);
+        room = await chatService.findRoomByIdPopulated(roomId);
+      }
+
+      // Fallback: fetch room if not loaded yet
+      if (!room) {
+        room = await chatService.findRoomById(roomId);
       }
 
       // Mark messages as delivered (they opened the chat)
@@ -81,50 +85,53 @@ export function registerChatHandlers(namespace: Namespace, socket: Socket): void
         userRole === UserRole.ADMIN ? 'unreadCountAdmin' : 'unreadCountCustomer';
       await chatService.resetUnreadCount(roomId, counterField);
 
-      // Load initial messages
+      // Load initial messages (newest first from DB, reverse for chronological)
       const messages = await chatService.getMessages(
         roomId,
         undefined,
         CHAT_DEFAULTS.INITIAL_MESSAGE_LIMIT,
       );
 
-      socket.emit(CHAT_EVENTS.CHAT_HISTORY, {
-        roomId,
-        messages,
+      cb({
+        success: true,
+        room,
+        messages: messages.reverse(),
+        hasMore: messages.length >= CHAT_DEFAULTS.INITIAL_MESSAGE_LIMIT,
       });
     } catch (error) {
       logger.error({ err: error }, 'Error in join-chat handler');
-      emitError(socket, 'Failed to join chat');
+      cb({ error: 'Failed to join chat' });
     }
   });
 
   // ─── SEND MESSAGE ───
-  socket.on(CHAT_EVENTS.SEND_MESSAGE, async (data: unknown) => {
+  socket.on(CHAT_EVENTS.SEND_MESSAGE, async (data: unknown, callback?: (response: unknown) => void) => {
+    const cb = typeof callback === 'function' ? callback : (() => {});
     try {
       // Rate limit
       try {
         await messageLimiter.consume(userId);
       } catch {
-        return emitError(socket, 'Too many messages. Please slow down.');
+        return cb({ error: 'Too many messages. Please slow down.' });
       }
 
       // Validate
       const parsed = sendMessageSchema.safeParse(data);
       if (!parsed.success) {
-        return emitError(socket, parsed.error.errors[0]?.message ?? 'Invalid message');
+        return cb({ error: parsed.error.errors[0]?.message ?? 'Invalid message' });
       }
 
       const { roomId, content, attachments } = parsed.data;
 
       // Verify sender has joined this room
       if (!getJoinedRooms(socket.id).has(roomId)) {
-        return emitError(socket, 'You must join the chat room first');
+        return cb({ error: 'You must join the chat room first' });
       }
 
       // Verify access
       const hasAccess = await chatService.verifyRoomAccess(roomId, userId, userRole);
       if (!hasAccess) {
-        return emitError(socket, 'Access denied to this chat room');
+        return cb({ error: 'Access denied to this chat room' });
       }
 
       // Sanitize
@@ -146,11 +153,8 @@ export function registerChatHandlers(namespace: Namespace, socket: Socket): void
         attachments: sanitizedAttachments,
       });
 
-      // Broadcast to room (including sender)
-      namespace.to(roomId).emit(CHAT_EVENTS.NEW_MESSAGE, {
-        roomId,
-        message,
-      });
+      // Broadcast to room (including sender) — send message directly, not wrapped
+      namespace.to(roomId).emit(CHAT_EVENTS.NEW_MESSAGE, message);
 
       // Increment unread counter for the OTHER side
       const otherCounterField =
@@ -159,9 +163,11 @@ export function registerChatHandlers(namespace: Namespace, socket: Socket): void
 
       // Notify room update (for admin room list)
       namespace.emit(CHAT_EVENTS.ROOM_UPDATED, { roomId });
+
+      cb({ success: true, message });
     } catch (error) {
       logger.error({ err: error }, 'Error in send-message handler');
-      emitError(socket, 'Failed to send message');
+      cb({ error: 'Failed to send message' });
     }
   });
 
@@ -189,7 +195,8 @@ export function registerChatHandlers(namespace: Namespace, socket: Socket): void
   });
 
   // ─── MESSAGE READ ───
-  socket.on(CHAT_EVENTS.MESSAGE_READ, async (data: { roomId?: string }) => {
+  socket.on(CHAT_EVENTS.MESSAGE_READ, async (data: { roomId?: string }, callback?: (response: unknown) => void) => {
+    const cb = typeof callback === 'function' ? callback : (() => {});
     try {
       const roomId = data?.roomId;
       if (!roomId || !getJoinedRooms(socket.id).has(roomId)) return;
@@ -206,35 +213,42 @@ export function registerChatHandlers(namespace: Namespace, socket: Socket): void
         userId,
         status: 'read',
       });
+
+      cb({ success: true });
     } catch (error) {
       logger.error({ err: error }, 'Error in message-read handler');
+      cb({ error: 'Failed to mark as read' });
     }
   });
 
   // ─── LOAD MORE (cursor-based pagination) ───
   socket.on(
     CHAT_EVENTS.LOAD_MORE,
-    async (data: { roomId?: string; cursor?: string }) => {
+    async (data: { roomId?: string; cursor?: string; before?: string }, callback?: (response: unknown) => void) => {
+      const cb = typeof callback === 'function' ? callback : (() => {});
       try {
         const roomId = data?.roomId;
         if (!roomId || !getJoinedRooms(socket.id).has(roomId)) {
-          return emitError(socket, 'You must join the chat room first');
+          return cb({ error: 'You must join the chat room first' });
         }
+
+        // Support both 'cursor' and 'before' field names from clients
+        const cursorId = data.cursor || data.before;
 
         const messages = await chatService.getMessages(
           roomId,
-          data.cursor,
+          cursorId,
           CHAT_DEFAULTS.PAGINATION_LIMIT,
         );
 
-        socket.emit(CHAT_EVENTS.CHAT_HISTORY, {
-          roomId,
-          messages,
-          isLoadMore: true,
+        cb({
+          success: true,
+          messages: messages.reverse(),
+          hasMore: messages.length >= CHAT_DEFAULTS.PAGINATION_LIMIT,
         });
       } catch (error) {
         logger.error({ err: error }, 'Error in load-more handler');
-        emitError(socket, 'Failed to load messages');
+        cb({ error: 'Failed to load messages' });
       }
     },
   );
@@ -242,35 +256,42 @@ export function registerChatHandlers(namespace: Namespace, socket: Socket): void
   // ─── GET ROOMS (Admin only) ───
   socket.on(
     CHAT_EVENTS.GET_ROOMS,
-    async (data?: { cursor?: string; limit?: number }) => {
+    async (data: { cursor?: string; limit?: number } | undefined, callback?: (response: unknown) => void) => {
+      const cb = typeof callback === 'function' ? callback : (() => {});
       try {
         if (userRole !== UserRole.ADMIN) {
-          return emitError(socket, 'Only admins can view all rooms');
+          return cb({ error: 'Only admins can view all rooms' });
         }
 
+        const limit = data?.limit || 20;
         const rooms = await chatService.getRoomsForAdmin(
           data?.cursor,
-          data?.limit,
+          limit,
         );
 
-        socket.emit(CHAT_EVENTS.ROOMS_LIST, { rooms });
+        cb({
+          success: true,
+          rooms,
+          hasMore: rooms.length >= limit,
+        });
       } catch (error) {
         logger.error({ err: error }, 'Error in get-rooms handler');
-        emitError(socket, 'Failed to load rooms');
+        cb({ error: 'Failed to load rooms' });
       }
     },
   );
 
   // ─── CLOSE CHAT (Admin only) ───
-  socket.on(CHAT_EVENTS.CLOSE_CHAT, async (data: { roomId?: string }) => {
+  socket.on(CHAT_EVENTS.CLOSE_CHAT, async (data: { roomId?: string }, callback?: (response: unknown) => void) => {
+    const cb = typeof callback === 'function' ? callback : (() => {});
     try {
       if (userRole !== UserRole.ADMIN) {
-        return emitError(socket, 'Only admins can close chats');
+        return cb({ error: 'Only admins can close chats' });
       }
 
       const roomId = data?.roomId;
       if (!roomId) {
-        return emitError(socket, 'Room ID is required');
+        return cb({ error: 'Room ID is required' });
       }
 
       await chatService.closeRoom(roomId);
@@ -282,9 +303,10 @@ export function registerChatHandlers(namespace: Namespace, socket: Socket): void
       });
 
       logger.info(`Chat room ${roomId} closed by admin ${userId}`);
+      cb({ success: true });
     } catch (error) {
       logger.error({ err: error }, 'Error in close-chat handler');
-      emitError(socket, 'Failed to close chat');
+      cb({ error: 'Failed to close chat' });
     }
   });
 

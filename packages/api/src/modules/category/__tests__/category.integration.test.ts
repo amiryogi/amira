@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import supertest from 'supertest';
 import {
   createTestApp,
   authenticatedAgent,
   expectSuccess,
-  expectError,
   expectPaginated,
 } from '../../../test/helpers.js';
 import { createTestCategory } from '../../../test/factories/category.factory.js';

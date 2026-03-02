@@ -26,6 +26,14 @@ export const registerSchema = z
     path: ['confirmPassword'],
   });
 
+/** Backend-only: validates register payload without confirmPassword */
+export const registerApiSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+  email: z.string().email('Invalid email address'),
+  password: strongPassword,
+  phone: z.string().min(10).max(15).optional(),
+});
+
 export const forgotPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
 });
@@ -48,6 +56,7 @@ export const resetPasswordFormSchema = z
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+export type RegisterApiInput = z.infer<typeof registerApiSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type ResetPasswordFormInput = z.infer<typeof resetPasswordFormSchema>;

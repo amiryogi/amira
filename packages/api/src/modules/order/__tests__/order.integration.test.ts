@@ -8,7 +8,7 @@ import {
 } from '../../../test/helpers.js';
 import { createTestUser, createTestAdmin } from '../../../test/factories/user.factory.js';
 import { createTestOrder } from '../../../test/factories/order.factory.js';
-import { OrderStatus, PaymentMethod } from '@amira/shared';
+import { OrderStatus } from '@amira/shared';
 import mongoose from 'mongoose';
 
 const app = createTestApp();

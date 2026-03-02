@@ -137,7 +137,7 @@ export class AuthService {
     await user.save();
 
     // Revoke all refresh tokens
-    await this.authRepo.revokeAllUserTokens(user._id as string);
+    await this.authRepo.revokeAllUserTokens(String(user._id));
 
     logger.info(`Password reset successful for: ${user.email}`);
   }
@@ -168,7 +168,7 @@ export class AuthService {
 
   private toPublicUser(user: IUserDocument): IUserPublic {
     return {
-      _id: user._id as string,
+      _id: String(user._id),
       name: user.name,
       email: user.email,
       role: user.role,
